@@ -25,7 +25,13 @@
 
 % Tenslotte wordt hyperref gebruikt voor pdf bestanden.
 % Dit mag verwijderd worden voor de af te drukken versie.
-\usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
+% PassOptionsToPackage fixes line breaks in URLs
+\PassOptionsToPackage{hyphens}{url}\usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
+
+% cite (author, year) style
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+\setcitestyle{authoryear,open={(},close={)}}
 
 %%%%%%%
 % Om wat tekst te genereren wordt hier het lipsum pakket gebruikt.
@@ -34,6 +40,58 @@
  {\usepackage{lipsum}\setlipsumdefault{11-13}}%
  {\newcommand{\lipsum}[1][11-13]{\par Hier komt wat tekst: lipsum ##1.\par}}
 %%%%%%%
+
+% Set todos in text
+\usepackage{todonotes}
+
+%%%%%%%
+% Custom code listings
+\usepackage{listings}
+\usepackage{color}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+% Custom colors
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\definecolor{antiquewhite}{rgb}{0.98, 0.92, 0.84}
+
+\lstdefinestyle{turtle}{
+    %backgroundcolor = \color{antiquewhite},
+    basicstyle=\footnotesize,
+    numbers=left,
+    stepnumber=1,
+    % morecomment=[l]{\# },
+    %% TODO fix only comment if hashtag followed by space
+    keywordstyle=\footnotesize\color{deepblue},
+    emph={Authorization, agentClass, Agent, mode, Read, Write, Control, accessTo, agent},
+    morekeywords={acl, @prefix, foaf},             % Add keywords here
+    %keywordstyle=\color{green},
+    commentstyle=\itshape\color{orange},
+    %emphstyle=\footnotesize\color{deepred},    % Custom highlighting style
+     emphstyle={\color{deepgreen}},
+    stringstyle=\color{deepgreen},
+    frame=t,                         % Any extra options here
+    showstringspaces=false,
+}
+
+%%%%%%%%%
+% Fix quotes, see https://tex.stackexchange.com/questions/356898/quote-with-author-reference-at-the-end
+\let\oldquote\quote
+\let\endoldquote\endquote
+\renewenvironment{quote}[2][]
+  {\if\relax\detokenize{#1}\relax
+     \def\quoteauthor{#2}%
+   \else
+     \def\quoteauthor{#2~---~#1}%
+   \fi
+   \oldquote}
+  {\par\nobreak\smallskip\hfill(\quoteauthor)%
+   \endoldquote\addvspace{\bigskipamount}}
+
 
 %\includeonly{chap-n}
 \begin{document}
@@ -71,50 +129,51 @@
 \listoffiguresandtables
 % De lijst van symbolen is eveneens optioneel.
 % Deze lijst moet wel manueel aangemaakt worden, bv. als volgt:
-\chapter{List of Abbreviations and Symbols}
-\section*{Abbreviations}
+\chapter{List of Abbreviations}
+%\section*{Abbreviations}
 \begin{flushleft}
   \renewcommand{\arraystretch}{1.1}
   \begin{tabularx}{\textwidth}{@{}p{12mm}X@{}}
-    LoG   & Laplacian-of-Gaussian \\
-    MSE   & Mean Square error \\
-    PSNR  & Peak Signal-to-Noise ratio \\
+    Solid   & Social Linked Data \\
+    Pod   & Personal Online Data Store \\
+    WAC   & Web Access Control \\
+    ACL   & Access Control List \\
+    RDF   & Resource Description Framework \\
+    Turtle   & Terse RDF Triple Language \\
   \end{tabularx}
 \end{flushleft}
-\section*{Symbols}
-\begin{flushleft}
-  \renewcommand{\arraystretch}{1.1}
-  \begin{tabularx}{\textwidth}{@{}p{12mm}X@{}}
-    42    & ``The Answer to the Ultimate Question of Life, the Universe,
-            and Everything'' according to \cite{h2g2} \\
-    $c$   & Speed of light \\
-    $E$   & Energy \\
-    $m$   & Mass \\
-    $\pi$ & The number pi \\
-  \end{tabularx}
-\end{flushleft}
+%\section*{Symbols}
+%\begin{flushleft}
+%  \renewcommand{\arraystretch}{1.1}
+%  \begin{tabularx}{\textwidth}{@{}p{12mm}X@{}}
+%    42    & ``The Answer to the Ultimate Question of Life, the Universe,
+%            and Everything'' according to \cite{h2g2} \\
+%    $c$   & Speed of light \\
+%    $E$   & Energy \\
+%    $m$   & Mass \\
+%    $\pi$ & The number pi \\
+%  \end{tabularx}
+%\end{flushleft}
 
 % Nu begint de eigenlijke tekst
 \mainmatter
 
-\include{intro}
-\include{chap-1}
-\include{chap-2}
-% ... en zo verder tot
-\include{chap-n}
-\include{conclusion}
+\include{chapters/1-intro}
+\include{chapters/2-background}
+\include{chapters/conclusion}
 
 % Indien er bijlagen zijn:
-\appendixpage*          % indien gewenst
-\appendix
-\include{app-A}
+%\appendixpage*          % indien gewenst
+%\appendix
+%\include{app-A}
 % ... en zo verder tot
-\include{app-n}
+%\include{app-n}
 
 \backmatter
 % Na de bijlagen plaatst men nog de bibliografie.
 % Je kan de  standaard "abbrv" bibliografiestijl vervangen door een andere.
-\bibliographystyle{abbrv}
+%\bibliographystyle{abbrv}
+% Vanboven bij package import gedefinieerd
 \bibliography{references}
 
 \end{document}

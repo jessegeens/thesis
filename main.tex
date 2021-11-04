@@ -1,5 +1,5 @@
-\documentclass[master=cws,masteroption=gs,english]{kulemt}
-\setup{title={A middleware for secure and protected data aggregation},
+\documentclass[master=cws,masteroption=gs,english]{kulemt/kulemt}
+\setup{title={A Middleware For Secure And Protected Data Aggregation},
   author={Jesse Geens},
   promotor={Prof.\,dr.\,ir.\ W. Joosen \and dr. B. Lagaisse \and Prof. dr. V. Naessens},
   assessor={Ir.\,W. Eetveel\and W. Eetrest},
@@ -27,6 +27,36 @@
 % Dit mag verwijderd worden voor de af te drukken versie.
 % PassOptionsToPackage fixes line breaks in URLs
 \PassOptionsToPackage{hyphens}{url}\usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
+\hypersetup{%
+  citecolor=blue!70,
+  linkcolor=black,
+}
+
+% Fancy box
+%\usepackage[strict]{changepage}
+
+% for formal definitions
+\usepackage{framed}
+
+% environment derived from framed.sty: see leftbar environment definition
+\definecolor{formalshade}{rgb}{0.95,0.95,1}
+\definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
+
+\newenvironment{formal}{%
+  \def\FrameCommand{%
+    \hspace{1pt}%
+    {\color{darkblue}\vrule width 2pt}%
+    {\color{formalshade}\vrule width 4pt}%
+    \colorbox{formalshade}%
+  }%
+  \MakeFramed{\advance\hsize-\width\FrameRestore}%
+  \noindent\hspace{-4.55pt}% disable indenting first paragraph
+  \begin{adjustwidth}{}{7pt}%
+  \vspace{2pt}\vspace{2pt}%
+}
+{%
+  \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+}
 
 % cite (author, year) style
 \usepackage{natbib}
@@ -48,6 +78,7 @@
 % Custom code listings
 \usepackage{listings}
 \usepackage{color}
+\usepackage{chngcntr}
 
 % Default fixed font does not support bold face
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
@@ -92,9 +123,11 @@
   {\par\nobreak\smallskip\hfill(\quoteauthor)%
    \endoldquote\addvspace{\bigskipamount}}
 
-
 %\includeonly{chap-n}
 \begin{document}
+
+% Make listing numbers follow chapters
+\counterwithin{lstlisting}{chapter}
 
 \begin{preface}
   I would like to thank everybody who kept me busy the last year,
@@ -118,28 +151,35 @@
   Wanneer de tekst voor een Nederlandstalige master in het Engels wordt
   geschreven, wordt hier normaal een uitgebreide samenvatting verwacht,
   bijvoorbeeld een tiental bladzijden. 
-
+  
   \lipsum[1]
 \end{abstract*}
 
 % Een lijst van figuren en tabellen is optioneel
-%\listoffigures
+\listoffigures
 %\listoftables
 % Bij een beperkt aantal figuren en tabellen gebruik je liever het volgende:
-\listoffiguresandtables
+%\listoffiguresandtables
 % De lijst van symbolen is eveneens optioneel.
 % Deze lijst moet wel manueel aangemaakt worden, bv. als volgt:
 \chapter{List of Abbreviations}
 %\section*{Abbreviations}
 \begin{flushleft}
   \renewcommand{\arraystretch}{1.1}
-  \begin{tabularx}{\textwidth}{@{}p{12mm}X@{}}
-    Solid   & Social Linked Data \\
-    Pod   & Personal Online Data Store \\
-    WAC   & Web Access Control \\
-    ACL   & Access Control List \\
-    RDF   & Resource Description Framework \\
+  \begin{tabularx}{\textwidth}{@{}p{20mm}X@{}}
+    Solid    & Social Linked Data \\
+    Pod      & Personal Online Data Store \\
+    WAC      & Web Access Control \\
+    ACL      & Access Control List \\
+    RDF      & Resource Description Framework \\
     Turtle   & Terse RDF Triple Language \\
+    LDP      & Linked Data Platform \\
+    LDPC     & Linked Data Platform Container \\
+    LDP-BC   & Linked Data Platform Basic Container \\
+    LDP-DC   & Linked Data Platform Direct Container \\
+    LDP-RS   & Linked Data Platform RDF Source \\
+    LDP-NR   & Linked Data Platform Non-RDF Source \\
+    PII      & Personally Identifiable Information \\
   \end{tabularx}
 \end{flushleft}
 %\section*{Symbols}
@@ -174,7 +214,7 @@
 % Je kan de  standaard "abbrv" bibliografiestijl vervangen door een andere.
 %\bibliographystyle{abbrv}
 % Vanboven bij package import gedefinieerd
-\bibliography{references}
+\bibliography{bibliography/solid, bibliography/pets}
 
 \end{document}
 

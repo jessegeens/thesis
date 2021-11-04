@@ -19,7 +19,7 @@
 %% version 2005/12/01 or later.
 %% 
 \NeedsTeXFormat{LaTeX2e}[2001/06/01]
-\ProvidesClass{kulemt}
+\ProvidesClass{kulemt/kulemt}
     [2021/03/11 v1.11
      KU Leuven engineering master's thesis document class]
 \def\kulemt@cls{kulemt}
@@ -319,7 +319,7 @@
     \kulemt@ifdutch{Begeleider}{Assistant}%
     \kulemt@ifand\kulemt@assistant{s}{}%
   \fi}
-\providecommand*\kulemt@cfgfile{kulemt.cfg}
+\providecommand*\kulemt@cfgfile{kulemt/kulemt.cfg}
 \ifx\kulemt@cfgfile\@empty\else
   \InputIfFileExists\kulemt@cfgfile{}{\kulemt@error{%
       Configuration file `\kulemt@cfgfile' is not installed}}

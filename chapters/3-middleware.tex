@@ -1,0 +1,47 @@
+\chapter{Middleware}
+\label{cha:middleware}
+The Solid project aims to solve the problem of decentralizing the web by giving data back to the user. However, no distinction is made between the trust level given to client applications. \middleware{} tries to mitigate this by providing an additional software layer in between the client and Solid server, which provides more fine-grained privacy control options. \todo{Needs more detailed description}
+
+\section{Use cases}
+\todo[inline]{Write here about two example use cases that will be used to guide the design and evaluate the performance (ie something with health data and maybe financial data, because those are privacy-sensitive datasets)}
+\subsection{Health data}
+
+\subsection{Other use case (finance?)}
+
+\section{Requirements}
+\todo[inline]{Right now, only non-functional requirements and none of them are SMART (specific, measurable, ...). Is this enough?}
+
+As a first step in the development process of the proposed solution, a number of requirements are brought forth to ensure that \middleware{} follows the philosophy of Solid, and to guarantee that solves the problem statement.\todo{Rewrite this sentence}
+
+Since \middleware{} builds forth upon the Solid project, it is crucial that it follows the same philosophy. A core property of Solid is its \textbf{decentralization}, meaning that anyone can run a Solid server and host their pod themselves. Since other users may prefer to use a pod from a provider such as Inrupt\footnote{\url{https://inrupt.com}}, \middleware{} must be able to be run stand-alone. This ensures that 
+everyone can run \middleware{} and users are not stuck using the same provider for both their pod and \middleware{}.
+
+Solid builds further upon the principles of Linked Data, and Solid servers can store any type of data. As \middleware{} aims to be a general solution, it must provide a way to anonymize any type of data. Thus, \textbf{flexibility for the supported data scheme} is an essential part of \middleware{}. Concretely, \middleware{}'s core should not hard-code any \gls{PETs}: these should be able to be plugged in flexibly and selected automatically, to ensure that any data scheme can be supported. This provides a technical challenge, as a sufficient level of abstraction must be developed to be able to support any data scheme.
+
+Different client applications may be trusted at different levels, just as that different data schemes may contain more or less sensitive data elements. An important aspect to solve is thus being able to distinguish different \textit{privacy levels}: required levels of anonymization. \middleware{} must therefore not only be able to adapt to different data schemes, but must also support different privacy levels for every data scheme. The selected PET is highly dependent on the data scheme\todo{explain why, ie sometimes better to delete data, other times pseudonym, or generalise}, therefore \middleware{} must \textbf{automatically select \gls{PETs}} based on the input data scheme and requested privacy level.
+
+Finally, Solid aims to become the de facto standard for web applications in the future. Consequently, it must be intuitive for non-technical users. There can be no technical jargon, and it must be incredibly easy to set-up. Since \middleware{} aims to follow this philosophy, the proposed solution must be \textbf{intuitive to use} for non-technical users. Concretely, this means that it should be opaque to the users which concrete PET is applied for which use case. On that account, a number of \textit{privacy levels} will be created and presented to the user in a simple manner: a higher privacy level means more data protection but less utility. The user will then be able to select between a number of privacy levels, without needing to understand the technical details behind the scenes.
+
+\section{Privacy levels}
+In order to provide an intuitive mechanism for selecting which data is transformed, different privacy levels are introduced. These privacy levels form an abstraction above the concrete data transformations and \gls{PETs} that are applied to the data before it is passed on to the application. This ensures that non-technical users can use \middleware{}, without needing to know the technical details of the technologies and tactics that are employed. Four levels of increasing privacy are introduced, based partially on the \gls{GDPR} definition of sensitive personal data and on the types of identifiers defined in section \ref{sec:data-deid}.\\
+
+\noindent \textbf{Level 1: all data} No data transformations are applied, all data is passed to the requesting application.\\
+
+\noindent \textbf{Level 2: Removal of sensitive personal data} Sensitive personal data, as defined by the GDPR \citep{gdpr}, is removed from the dataset. This includes data consisting of racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, genetic data, biometric data, data concerning health, data concerning criminal convictions or data concerning a natural person's sex life or sexual orientation. Thus, the tactic \textit{Remove} is applied to all data elements matching this definition.\todo{Explain why remove is the best tactic here}\\
+
+\noindent \textbf{Level 3: Pseudonymization/generalisation of direct identifiers} Since level 3 is a stronger version of level 2, sensitive personal data is removed first. Additionally, direct personal identifiers are pseudonymized or generalized. Concretely, the tactics \textit{Pseudonym}, \textit{Placeholder}, \textit{Aggregate} and \textit{Blur} may be applied here, depending on the specific data attribute. In addition, data elements may also be \textit{perturbed}. Examples are the replacement of names by placeholders, the perturbation or adding a placeholder for birth dates (such that the exact date is obscured, but the age is still correct), the removal of street names and numbers while keeping larger geographic areas such as cities, etc. This makes the data still relatively accurate, while direct identification of the user is made impossible.\\
+
+\noindent \textbf{Level 4: Pseudonymization/generalisation of (in)direct identifiers} In addition to direct identifiers, also indirect identifiers are now modified or removed. The same \gls{PETs} and tactics are used, but are now applied more strictly and to more data attributes. For example, when perturbing birth dates, now the exact age is not kept exactly, but it is changed to a range within the exact age. Cities may also be perturbed when possible, but keeping for example the province or state. Other indirect identifiers such as genders may also be modified or removed.
+
+\section{Adversary model}
+\todo[inline]{Write here a paragraph about the considered adversary model, decide what leakage is allowed, maybe define privacy levels here, ...}
+
+\section{Design}
+\todo[inline]{Give general introduction to the architecture here, such as what big decisions were made, give a system-level overview, specify the big flow of the software (eg what happens when a user makes a request to the proxy). The complete model from VP can maybe be added in the appendix? (using the SAPlugin for TeX generation)}
+
+\section{Implementation}
+\todo[inline]{Write here about concrete implementation: eg, what language used and why, how does dynamic plugin loading happen (eg using components.js or something similar), which hurdles had to be overcome during the implementation etc
+-> maybe make notes here about problems on the road so you don't forget them}
+
+\section{Limitations}
+\todo[inline]{Describe here what the limitations of the proposed middleware are: what functionality does it lack? Under what attacker models is it insecure? What other limitations are there (eg certain things cannot be supported? it is not compliant with the spec in some cases? Maybe give a hint to future work here already}

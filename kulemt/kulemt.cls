@@ -375,7 +375,7 @@
       \def\pagerefname{pagina}%
       \def\partrefname{Deel~}%
       \def\chapterrefname{hoofdstuk~}%
-      \def\listfiguresandtablesname{L"yst van figuren en tabellen}}}
+      \def\listfiguresandtablesname{Lijst van figuren en tabellen}}}
 \AtBeginDocument{\gdef\latinencoding{T1}%
   \ifx\cf@encoding\latinencoding\else \xdef\latinencoding{OT1}\fi}
 \edef\kulemt@language{\kulemt@language}

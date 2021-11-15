@@ -1,0 +1,21 @@
+\begin{table}[H]
+\begin{center}
+\begin{tabulary}{\textwidth}{p{0.17\textwidth}p{0.83\textwidth}}
+\textbf{Tactic name} & \textbf{Description}                                                                                                                                                          \\ \hline
+Remove               & The targeted and deliberate omission of PII from the data record or data set.                                                                                                 \\
+Select / Filter      & Same as Remove applied to a copy of the data while keeping the original data.                                                                                                 \\
+Transform            & The application of a holistic transformation (not targeted on PII elements only) on data elements that is destructive in terms of ability to distinguish these data elements. \\
+Mask                 & Overwriting data elements with other values for the purpose of obfuscating the content.                                                                                       \\
+Encrypt              & Using cryptographic means to encode the PII attribute values / records / datasets.                                                                                            \\
+Randomize            & Tactics that involve the modification of PII attribute values/records by injecting artificial random elements.                                                                \\
+Aggregate            & Generalize, combine and group data elements.                                                                                                                                  \\
+Blur                 & Reduce the accuracy of the data so that distinguishing characteristics become indiscernible.                                                                                  \\
+Pseudonym            & The systematic replacement of direct identifiers with surrogates, whereby the mapping between surrogate and identity is kept separately.                                      \\
+Placeholder          & The systematic replacement of direct identifiers with a surrogate that is the same for all members of the population.                                                         \\
+Interchange          & The targeted mingling of data elements across members of the population.                                                                                                      \\
+Synthetic            & The replacement of data elements with a synthetic placeholder which is a constructed representation specifically aimed at conveying discriminatory features.                 
+\end{tabulary}
+\caption{Overview of architectural tactics involving data transformations, by \citet{de-id-taxonomy}}
+\label{table:de-id-taxonomy}
+\end{center}
+\end{table}

@@ -15,8 +15,6 @@
 <#owner>
     a acl:Authorization;
     acl:agent <https://pod.geens.cloud/podjesse/profile/card#me>;
-    # Optional owner email, to be used for account recovery:
-    acl:agent <mailto:jesse.geens@gmail.com>;
     # Set access to root storage folder
     acl:accessTo <./>;
     # All resources will inherit this authorization, by default

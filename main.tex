@@ -21,10 +21,9 @@
 % Kies de fonts voor de gewone tekst, bv. Latin Modern
 \setup{font=lm}
 
-% Hier kun je dan nog andere pakketten laden of eigen definities voorzien
+%% TODO come up with name and insert it here
+\newcommand{\middleware}{(middleware)}
 
-% Tenslotte wordt hyperref gebruikt voor pdf bestanden.
-% Dit mag verwijderd worden voor de af te drukken versie.
 % PassOptionsToPackage fixes line breaks in URLs
 \PassOptionsToPackage{hyphens}{url}\usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
 \hypersetup{%
@@ -32,18 +31,16 @@
   linkcolor=black,
 }
 
-% Fancy box
-%\usepackage[strict]{changepage}
+\usepackage{float}
 
 % for formal definitions
 \usepackage{framed}
 
 % environment derived from framed.sty: see leftbar environment definition
-\definecolor{formalshade}{rgb}{0.95,0.95,1}
-\definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
-
 \newenvironment{formal}{%
   \def\FrameCommand{%
+    \definecolor{formalshade}{rgb}{0.95,0.95,1}
+    \definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
     \hspace{1pt}%
     {\color{darkblue}\vrule width 2pt}%
     {\color{formalshade}\vrule width 4pt}%
@@ -67,7 +64,7 @@
 % Om wat tekst te genereren wordt hier het lipsum pakket gebruikt.
 % Bij een echte masterproef heb je dit natuurlijk nooit nodig!
 \IfFileExists{lipsum.sty}%
- {\usepackage{lipsum}\setlipsumdefault{11-13}}%
+ {\usepackage{lipsum}\SetLipsumDefault{11-13}}%
  {\newcommand{\lipsum}[1][11-13]{\par Hier komt wat tekst: lipsum ##1.\par}}
 %%%%%%%
 
@@ -79,6 +76,13 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{chngcntr}
+
+% Acronyms
+\usepackage[acronym,smallcaps]{glossaries}
+
+\loadglsentries{acronyms}
+\makeglossaries
+\glsdisablehyper
 
 % Default fixed font does not support bold face
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
@@ -123,65 +127,38 @@
   {\par\nobreak\smallskip\hfill(\quoteauthor)%
    \endoldquote\addvspace{\bigskipamount}}
 
+% No horizontal table overflows
+\usepackage{tabulary}
+
 %\includeonly{chap-n}
 \begin{document}
 
 % Make listing numbers follow chapters
 \counterwithin{lstlisting}{chapter}
 
-\begin{preface}
-  I would like to thank everybody who kept me busy the last year,
-  especially my promoter and my assistants. I would also like to thank the
-  jury for reading the text. My sincere gratitude also goes to my wive and
-  the rest of my family.
-\end{preface}
+\include{chapters/0a-preface}
 
 \tableofcontents*
 
-\begin{abstract}
-  The \texttt{abstract} environment contains a more extensive overview of
-  the work. But it should be limited to one page.
+\include{chapters/0b-abstract-en}
 
-  \lipsum[1]
-\end{abstract}
-
-\begin{abstract*}
-  In dit \texttt{abstract} environment wordt een al dan niet uitgebreide
-  Nederlandse samenvatting van het werk gegeven.
-  Wanneer de tekst voor een Nederlandstalige master in het Engels wordt
-  geschreven, wordt hier normaal een uitgebreide samenvatting verwacht,
-  bijvoorbeeld een tiental bladzijden. 
-  
-  \lipsum[1]
-\end{abstract*}
+\include{chapters/0c-abstract-nl}
 
 % Een lijst van figuren en tabellen is optioneel
-\listoffigures
+%\listoffigures
 %\listoftables
 % Bij een beperkt aantal figuren en tabellen gebruik je liever het volgende:
-%\listoffiguresandtables
+\listoffiguresandtables
+\printglossary[type=\acronymtype]
 % De lijst van symbolen is eveneens optioneel.
 % Deze lijst moet wel manueel aangemaakt worden, bv. als volgt:
-\chapter{List of Abbreviations}
+%\chapter{List of Abbreviations}
 %\section*{Abbreviations}
-\begin{flushleft}
-  \renewcommand{\arraystretch}{1.1}
-  \begin{tabularx}{\textwidth}{@{}p{20mm}X@{}}
-    Solid    & Social Linked Data \\
-    Pod      & Personal Online Data Store \\
-    WAC      & Web Access Control \\
-    ACL      & Access Control List \\
-    RDF      & Resource Description Framework \\
-    Turtle   & Terse RDF Triple Language \\
-    LDP      & Linked Data Platform \\
-    LDPC     & Linked Data Platform Container \\
-    LDP-BC   & Linked Data Platform Basic Container \\
-    LDP-DC   & Linked Data Platform Direct Container \\
-    LDP-RS   & Linked Data Platform RDF Source \\
-    LDP-NR   & Linked Data Platform Non-RDF Source \\
-    PII      & Personally Identifiable Information \\
-  \end{tabularx}
-\end{flushleft}
+%\begin{flushleft}
+%  \renewcommand{\arraystretch}{1.1}
+%  \begin{tabularx}{\textwidth}{@{}p{20mm}X@{}}
+%  \end{tabularx}
+%\end{flushleft}
 %\section*{Symbols}
 %\begin{flushleft}
 %  \renewcommand{\arraystretch}{1.1}
@@ -200,7 +177,9 @@
 
 \include{chapters/1-intro}
 \include{chapters/2-background}
-\include{chapters/conclusion}
+\include{chapters/3-middleware}
+\include{chapters/4-evaluation}
+\include{chapters/5-conclusion}
 
 % Indien er bijlagen zijn:
 %\appendixpage*          % indien gewenst
@@ -214,7 +193,10 @@
 % Je kan de  standaard "abbrv" bibliografiestijl vervangen door een andere.
 %\bibliographystyle{abbrv}
 % Vanboven bij package import gedefinieerd
-\bibliography{bibliography/solid, bibliography/pets}
+
+% nocite{*} includes all non-cited references
+\nocite{*}
+\bibliography{bibliography/solid, bibliography/pets, bibliography/middleware}
 
 \end{document}
 

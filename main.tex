@@ -57,7 +57,8 @@
 
 % cite (author, year) style
 \usepackage{natbib}
-\bibliographystyle{abbrvnat}
+%\bibliographystyle{abbrvnat}
+\bibliographystyle{unsrtnat}
 \setcitestyle{authoryear,open={(},close={)}}
 
 %%%%%%%
@@ -77,6 +78,9 @@
 \usepackage{color}
 \usepackage{chngcntr}
 
+% Enumerations with letters instead of numbers
+\usepackage{enumitem}
+
 % Acronyms
 \usepackage[acronym,smallcaps]{glossaries}
 
@@ -88,7 +92,7 @@
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
 \DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
 
-% Custom colors
+% Language support for turtle
 \definecolor{deepblue}{rgb}{0,0,0.5}
 \definecolor{deepred}{rgb}{0.6,0,0}
 \definecolor{deepgreen}{rgb}{0,0.5,0}
@@ -111,6 +115,41 @@
     stringstyle=\color{deepgreen},
     frame=t,                         % Any extra options here
     showstringspaces=false,
+}
+
+% Language support for JSON
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    %backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
 }
 
 %%%%%%%%%
@@ -148,8 +187,10 @@
 %\listoffigures
 %\listoftables
 % Bij een beperkt aantal figuren en tabellen gebruik je liever het volgende:
+\makeatletter\@openrightfalse
 \listoffiguresandtables
-\printglossary[type=\acronymtype]
+\printglossary[type=\acronymtype,title={List of Abbreviations}]
+\@openrighttrue\makeatother
 % De lijst van symbolen is eveneens optioneel.
 % Deze lijst moet wel manueel aangemaakt worden, bv. als volgt:
 %\chapter{List of Abbreviations}
@@ -177,9 +218,10 @@
 
 \include{chapters/1-intro}
 \include{chapters/2-background}
-\include{chapters/3-middleware}
-\include{chapters/4-evaluation}
-\include{chapters/5-conclusion}
+\include{chapters/3-requirements}
+\include{chapters/4-architecture}
+\include{chapters/5-evaluation}
+\include{chapters/6-conclusion}
 
 % Indien er bijlagen zijn:
 %\appendixpage*          % indien gewenst

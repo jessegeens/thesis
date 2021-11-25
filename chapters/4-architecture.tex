@@ -1,0 +1,53 @@
+\chapter{Architecture and Design}
+\section{Design}
+\todo[inline]{Give general introduction to the architecture here, such as what big decisions were made, give a system-level overview, specify the big flow of the software (eg what happens when a user makes a request to the proxy). The complete model from VP can maybe be added in the appendix? (using the SAPlugin for TeX generation)}
+
+\subsection{Pluggable data format transformations}
+\todo[inline]{Not final version, just some notes here}
+Right now, considering two options for allowing the "pluggable design" of the supported data formats. 
+\begin{enumerate}[label=(\alph*)]
+\item First option: there are separate "components" for transforming the data of a single file type. The data goes through the file type detector to select a "data type". Then, in some config file (eg datatypes.json), there is a mapping of "datatype" -$>$ "transformerComponent" (using eg components.js or something similar for another language). The advantage is here that any arbitrary code can be used to do some data transformations, and any file format can be used, even the most exotic ones. The disadvantage is that it takes more effort to code extra supported data types, as a whole transformer must be coded.
+\item Second option: writing transformators for the data is done by some sort of config files. See the listing below for an example. In this approach, there are a number of data transformations provided by the middleware (eg a component for removing an attribute, one for generalizing, one for generating a pseudonym etc). There is one of each for every file type (eg a component to remove an attribute from an xml document, one to generalize a field in a JSON doc, etc). The disadvantages are that this requires more up-front coding in the middleware to support all these transformations and file formats (eg JSON, XML, TTL), and limits extensibility to other file formats / transformations since these need to be coded into the middleware. This could also be made pluggable but then it may become a mess and become hard to make sense of (maybe in a future stage? but to start with, seems very complex). On the other hand, this does make it much more easy to support new data types, since you just specify which transformations to apply to which fields, such as in the example below
+\end{enumerate}
+
+\begin{lstlisting}[language=json]
+{
+    "schemeName": "TCXActivity",
+    "detector": {
+        "format": "xml",
+        "scheme": "https://www8.garmin.com/xmlschemas/TrainingCenterDatabasev2",
+    },
+    "transformations": {
+        {
+            "level": 2,
+            "pets": [{
+                "field": "AverageHeartRateBpm",
+                "fieldType": "int",
+                "transformation": "remove"
+            }]
+        },
+        {
+            "level": 3,
+            "pets": [{
+                "field": "AverageHeartRateBpm",
+                "fieldType": "int",
+                "transformation": "remove"
+            },
+            {
+                "field": "Cadence",
+                "fieldType": "int",
+                "transformation": "generalize",
+                "roundTo": 10,
+            }]
+        }
+    }
+}
+\end{lstlisting}
+
+
+\section{Implementation}
+\todo[inline]{Write here about concrete implementation: eg, what language used and why, how does dynamic plugin loading happen (eg using components.js or something similar), which hurdles had to be overcome during the implementation etc
+-> maybe make notes here about problems on the road so you don't forget them}
+
+\section{Limitations}
+\todo[inline]{Describe here what the limitations of the proposed middleware are: what functionality does it lack? Under what attacker models is it insecure? What other limitations are there (eg certain things cannot be supported? it is not compliant with the spec in some cases? Maybe give a hint to future work here already}

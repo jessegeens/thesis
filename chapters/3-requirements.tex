@@ -1,14 +1,25 @@
-\chapter{Middleware}
+\chapter{Requirements}
 \label{cha:middleware}
-The Solid project aims to solve the problem of decentralizing the web by giving data back to the user. However, no distinction is made between the trust level given to client applications. \middleware{} tries to mitigate this by providing an additional software layer in between the client and Solid server, which provides more fine-grained privacy control options. \todo{Needs more detailed description}
+The Solid project aims to solve the problem of decentralizing the web by giving data back to the user. However, no distinction is made between the trust level given to client applications. \middleware{} tries to mitigate this by providing an additional software layer in between the client and Solid server, which provides more fine-grained privacy control options. This problem statement determines the general goals of \middleware{}, but in order to guide the design effectively, some concrete requirements are needed, both non-functional, functional, and from a privacy-perspective. To adequately come up with requirements, we guide the process by making use of two concrete example use-cases, listed in \ref{sec:usecases}.   \todo{Needs more detailed description}
 
 \section{Use cases}
-\todo[inline]{Write here about two example use cases that will be used to guide the design and evaluate the performance (ie something with health data and maybe financial data, because those are privacy-sensitive datasets)}
-\subsection{Health data}
+\label{sec:usecases}
+\subsection{Exercise}
+The anonymization of health data makes a very good use-case to guide the design and development of \middleware{}, since it contains a lot of sensitive data attributes and personal information. In this use-case, exercise data from an application such as Strava is stored on the user's Solid pod. He wishes to export this data to a ranking board application to see who of his friends runs the fastest. However, he does not wish to share his exact heart rate since this is sensitive data. Since no suitable linked-data format for running exercises was found (i.e., one that supports all the necessary fields such as heart rate), the \gls{TCX} file format\footnote{Schema: \url{https://www8.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd}} is used instead. An additional advantage of this format is that it is supported by popular tools such as Strava and can be imported/exported by exercise trackers such as Garmin devices.
+\todo[inline]{A disadvantage is that it is not linked-data, which is a bit contrary to the Solid philosophy. However, it is perfectly supported by solid, and it is a well-known and open format, so this should not pose a problem.}
 
-\subsection{Other use case (finance?)}
+\subsection{Personal finance}
+\subsubsection{Option 1}
+In this use-case, a user has some personal finance data stored in his pod, for budgeting purposes. He uses a Solid application to track his expenses and manage his budget. One of the files in his finances container contains information about his bank account: which bank it belongs to, what interest rate it has, and how much money he has on his bank account. Another application wishes to suggest possible other plans of other banks that may be more beneficial to him (higher interest rates, for example): the user wishes to share his bank and interest rate, but he does not want the application to know how much money he has on his account. This scenario is supported by the \textit{DepositAccount}\footnote{\url{https://pending.schema.org/DepositAccount}} schema.
 
-\section{Requirements}
+\todo[inline]{Problem with this use-case: the DepositAccount schema only has one really sensitive field (the bank balance), it is not a very comprehensive data scheme and the use-case seems very limited. A much nicer use-case in my opinion is option 2.}
+
+\subsubsection{Option 2}
+In this use-case, the user has stored all his transactions on his Solid pod, and he wishes to see some trends and statistics about his spendings. However, expenses are sensitive data, especially when these are exact numbers and store locations. Therefore, the user opts to use \middleware{} to filter out the most sensitive information yet still receive relevant statistics. This is done by removing direct identifiers, and generalizing indirect identifiers, such as store locations and exact spendings at individual transactions.  For example, for entries of the type "Alice spent \texteuro 5,82 at Colruyt Leuven on 8/11/2021 16:53", the user wishes to modify this into "User87532 spent \texteuro 5 at Supermarket on 8/11/2021". This way, trends in the spending are kept (by rounding exact amounts to nearby integers, and replacing exact stores with store types). Information such as "you spent \texteuro 400 in supermarkets this month" will still be available (and relatively accurate), without giving away exact details. An example personal finance app, running on Solid, is \href{https://github.com/solid/money-pane}{money-pane}. It also uses a non-linked data format, this time a custom format.
+
+
+
+\section{Non-functional Requirements}
 \todo[inline]{Right now, only non-functional requirements and none of them are SMART (specific, measurable, ...). Is this enough?}
 
 As a first step in the development process of the proposed solution, a number of requirements are brought forth to ensure that \middleware{} follows the philosophy of Solid, and to guarantee that solves the problem statement.\todo{Rewrite this sentence}
@@ -22,6 +33,9 @@ Different client applications may be trusted at different levels, just as that d
 
 Finally, Solid aims to become the de facto standard for web applications in the future. Consequently, it must be intuitive for non-technical users. There can be no technical jargon, and it must be incredibly easy to set-up. Since \middleware{} aims to follow this philosophy, the proposed solution must be \textbf{intuitive to use} for non-technical users. Concretely, this means that it should be opaque to the users which concrete PET is applied for which use case. On that account, a number of \textit{privacy levels} will be created and presented to the user in a simple manner: a higher privacy level means more data protection but less utility. The user will then be able to select between a number of privacy levels, without needing to understand the technical details behind the scenes.
 
+\section{Adversary model}
+\todo[inline]{Write here a paragraph about the considered adversary model, decide what leakage is allowed, maybe introduce concept of privacy levels here, ...}
+
 \section{Privacy levels}
 In order to provide an intuitive mechanism for selecting which data is transformed, different privacy levels are introduced. These privacy levels form an abstraction above the concrete data transformations and \gls{PETs} that are applied to the data before it is passed on to the application. This ensures that non-technical users can use \middleware{}, without needing to know the technical details of the technologies and tactics that are employed. Four levels of increasing privacy are introduced, based partially on the \gls{GDPR} definition of sensitive personal data and on the types of identifiers defined in section \ref{sec:data-deid}.\\
 
@@ -33,15 +47,5 @@ In order to provide an intuitive mechanism for selecting which data is transform
 
 \noindent \textbf{Level 4: Pseudonymization/generalisation of (in)direct identifiers} In addition to direct identifiers, also indirect identifiers are now modified or removed. The same \gls{PETs} and tactics are used, but are now applied more strictly and to more data attributes. For example, when perturbing birth dates, now the exact age is not kept exactly, but it is changed to a range within the exact age. Cities may also be perturbed when possible, but keeping for example the province or state. Other indirect identifiers such as genders may also be modified or removed.
 
-\section{Adversary model}
-\todo[inline]{Write here a paragraph about the considered adversary model, decide what leakage is allowed, maybe define privacy levels here, ...}
+\todo[inline]{Maybe a custom level should also be supported for specific format, where the user can say that if the datatype is x, I want to apply transformation y to field z.}
 
-\section{Design}
-\todo[inline]{Give general introduction to the architecture here, such as what big decisions were made, give a system-level overview, specify the big flow of the software (eg what happens when a user makes a request to the proxy). The complete model from VP can maybe be added in the appendix? (using the SAPlugin for TeX generation)}
-
-\section{Implementation}
-\todo[inline]{Write here about concrete implementation: eg, what language used and why, how does dynamic plugin loading happen (eg using components.js or something similar), which hurdles had to be overcome during the implementation etc
--> maybe make notes here about problems on the road so you don't forget them}
-
-\section{Limitations}
-\todo[inline]{Describe here what the limitations of the proposed middleware are: what functionality does it lack? Under what attacker models is it insecure? What other limitations are there (eg certain things cannot be supported? it is not compliant with the spec in some cases? Maybe give a hint to future work here already}

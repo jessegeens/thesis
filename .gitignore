@@ -1,5 +1,6 @@
 vpp-model/model.vpp.bak*
 vpp-model/.model.vpp.lck
-architecture/KULeuven.pdf
-architecture/sareport.cls
-architecture/rationale.tex
+appendices/architecture/KULeuven.pdf
+appendices/architecture/sareport.cls
+appendices/architecture/rationale.tex
+appendices/architecture/report.tex

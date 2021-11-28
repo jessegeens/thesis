@@ -72,6 +72,12 @@
 % Set todos in text
 \usepackage{todonotes}
 
+% For diagrams
+\usepackage{rotating}
+\usepackage{pdflscape}
+\usepackage[sort]{cleveref}
+\usetikzlibrary{arrows}
+
 %%%%%%%
 % Custom code listings
 \usepackage{listings}
@@ -225,9 +231,10 @@
 \include{chapters/7-conclusion}
 
 % Indien er bijlagen zijn:
-%\appendixpage*          % indien gewenst
-%\appendix
-%\include{app-A}
+\appendixpage*          % indien gewenst
+\appendix
+\include{appendices/architecture/diagrams}
+\include{appendices/architecture/catalog}
 % ... en zo verder tot
 %\include{app-n}
 

@@ -467,6 +467,8 @@
 \def\tocheadstart{\clearforchapter\chapterheadstart}
 \def\lofheadstart{\clearforchapter\chapterheadstart}
 \def\lotheadstart{\clearforchapter\chapterheadstart}
+\RequirePackage[newfloat]{minted}
+\RequirePackage{caption}
 \newcommand*\listoffiguresandtables{%
   \chapter\listfiguresandtablesname
   \def\@lofmaketitle{\section*\listfigurename}%
@@ -474,7 +476,11 @@
   \let\listoffigures\relax
   \def\@lotmaketitle{\section*\listtablename}%
   \listoftables*%
-  \let\listoftables\relax}
+  \let\listoftables\relax
+ % \def\@lolmaketitle{\section*\listlistingname}%
+ % \listoflistings*%
+ % \let\listoflistings\relax  
+}
 \newcommand*\listfiguresandtablesname{List of Figures and Tables}
 \setrmarg{2.55em plus1fil}
 \setlength{\cftbeforechapterskip}{1ex \@plus\p@}

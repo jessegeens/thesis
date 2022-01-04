@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/product.schema.json",
+  "title": "Root settings data scheme",
+  "description": "A data scheme for describing the root settings of the middleware, such as the URL it should be hosted on",
+  "type": "object",
+  "properties": {
+		"port": {
+			"description": "The port on which the HTTP Server is listening for incoming requests",
+			"type": "integer",
+			"minimum": 1
+		},
+		"incomingWebID": {
+			"description": "The WebID to which requests will be sent, e.g. https://proxy.geens.cloud/profile/card#me",
+			"type": "string"
+		},
+		"forwardWebID": {
+			"description": "The URL to which requests should be forwarded, e.g. https://pod.geens.cloud/profile/card#me",
+			"type": "string"
+		},
+		"privacyPreferences": {
+			"description": "Describes the privacy settings of the user, i.e. which privacy levels are requested",
+			"type": "object",
+			"properties": {
+				"default": {
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 4
+				},
+				"customFields": {
+					"type": "object",
+					"description": "In this field, privacy levels can be mapped to specific data schemes, such that for more/less sensitive schemes a privacy level can be chosen that differs from the default",
+					"patternProperties": {
+						".{1,}": { "type": "integer" }
+					}
+				}
+			},
+			"required": ["default"]
+		}
+	},
+  "required": [ "port", "incomingWebID", "forwardWebID" ]
+}

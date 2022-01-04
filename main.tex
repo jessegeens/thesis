@@ -1,12 +1,12 @@
 \documentclass[master=cws,masteroption=gs,english]{kulemt/kulemt}
-\setup{title={A Middleware For Secure And Protected Data Aggregation},
+\setup{title={PePSA: A Privacy-enhancing Proxy for Solid Applications},
   author={Jesse Geens},
   promotor={Prof.\,dr.\,ir.\ W. Joosen \and dr. B. Lagaisse \and Prof. dr. V. Naessens},
   assessor={Ir.\,W. Eetveel\and W. Eetrest},
   assistant={E. H. Beni \and A. Rafique}}
 % De volgende \setup mag verwijderd worden als geen fiche gewenst is.
 \setup{filingcard,
-  translatedtitle={Een middleware voor veilige en beveiligde dataverzameling},
+  translatedtitle={Een privacy-verbeterende proxy voor Solid applicaties},
   udc=621.3,
   shortabstract={Hier komt een heel bondig abstract van hooguit 500
     woorden. \LaTeX\ commando's mogen hier gebruikt worden. Blanco lijnen
@@ -22,7 +22,7 @@
 \setup{font=lm}
 
 %% TODO come up with name and insert it here
-\newcommand{\middleware}{(middleware)}
+\newcommand{\middleware}{PePSA}
 
 % PassOptionsToPackage fixes line breaks in URLs
 \PassOptionsToPackage{hyphens}{url}\usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
@@ -55,11 +55,17 @@
   \vspace{2pt}\end{adjustwidth}\endMakeFramed%
 }
 
+\newcounter{futurework}
+\newenvironment{futurework}[1][]{\refstepcounter{futurework}\par\medskip
+   \noindent \textbf{Future Work~\thefuturework #1} \rmfamily}{\medskip}
+
 % cite (author, year) style
 \usepackage{natbib}
 %\bibliographystyle{abbrvnat}
 \bibliographystyle{unsrtnat}
 \setcitestyle{authoryear,open={(},close={)}}
+\newcommand{\citepjournal}[1]{(\citetalias{#1}, \citeyear{#1})}
+\newcommand{\citetjournal}[1]{\citetalias{#1} (\citeyear{#1})}
 
 %%%%%%%
 % Om wat tekst te genereren wordt hier het lipsum pakket gebruikt.
@@ -72,13 +78,7 @@
 % Set todos in text
 \usepackage{todonotes}
 
-% For diagrams
-\usepackage{rotating}
-\usepackage{pdflscape}
-\usepackage{amsmath}
-\usepackage{minitoc}
-\usepackage[sort]{cleveref}
-\usetikzlibrary{arrows}
+\include{appendices/architecture/vp-definitions}
 
 %%%%%%%
 % Custom code listings
@@ -91,10 +91,10 @@
 
 % Acronyms
 \usepackage[acronym,smallcaps]{glossaries}
-
+\glstoctrue
 \loadglsentries{acronyms}
 \makeglossaries
-\glsdisablehyper
+%\glsdisablehyper
 
 % Default fixed font does not support bold face
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
@@ -125,40 +125,14 @@
     showstringspaces=false,
 }
 
-% Language support for JSON
-\colorlet{punct}{red!60!black}
-\definecolor{background}{HTML}{EEEEEE}
-\definecolor{delim}{RGB}{20,105,176}
-\colorlet{numb}{magenta!60!black}
+% Support for source code listings
+\usemintedstyle{autumn}
 
-\lstdefinelanguage{json}{
-    basicstyle=\normalfont\ttfamily,
-    numbers=left,
-    numberstyle=\scriptsize,
-    stepnumber=1,
-    numbersep=8pt,
-    showstringspaces=false,
-    breaklines=true,
-    frame=lines,
-    %backgroundcolor=\color{background},
-    literate=
-     *{0}{{{\color{numb}0}}}{1}
-      {1}{{{\color{numb}1}}}{1}
-      {2}{{{\color{numb}2}}}{1}
-      {3}{{{\color{numb}3}}}{1}
-      {4}{{{\color{numb}4}}}{1}
-      {5}{{{\color{numb}5}}}{1}
-      {6}{{{\color{numb}6}}}{1}
-      {7}{{{\color{numb}7}}}{1}
-      {8}{{{\color{numb}8}}}{1}
-      {9}{{{\color{numb}9}}}{1}
-      {:}{{{\color{punct}{:}}}}{1}
-      {,}{{{\color{punct}{,}}}}{1}
-      {\{}{{{\color{delim}{\{}}}}{1}
-      {\}}{{{\color{delim}{\}}}}}{1}
-      {[}{{{\color{delim}{[}}}}{1}
-      {]}{{{\color{delim}{]}}}}{1},
-}
+\newenvironment{code}{\captionsetup{type=listing}}{}
+\SetupFloatingEnvironment{listing}{name=Listing}
+
+
+
 
 %%%%%%%%%
 % Fix quotes, see https://tex.stackexchange.com/questions/356898/quote-with-author-reference-at-the-end
@@ -180,6 +154,9 @@
 %\includeonly{chap-n}
 \begin{document}
 
+% Include bibliography aliases for citing journals
+\include{bibliography/aliases}
+
 % Make listing numbers follow chapters
 \counterwithin{lstlisting}{chapter}
 
@@ -195,8 +172,10 @@
 %\listoffigures
 %\listoftables
 % Bij een beperkt aantal figuren en tabellen gebruik je liever het volgende:
+%\renewcommand\listoflistingscaption{List of Source Codes}
 \makeatletter\@openrightfalse
 \listoffiguresandtables
+\listoflistings
 \printglossary[type=\acronymtype,title={List of Abbreviations}]
 \@openrighttrue\makeatother
 % De lijst van symbolen is eveneens optioneel.
@@ -235,6 +214,7 @@
 % Indien er bijlagen zijn:
 %\appendixpage*          % indien gewenst
 \appendix
+\include{appendices/schemas/schemas}
 \include{appendices/architecture/diagrams}
 \include{appendices/architecture/catalog}
 % ... en zo verder tot
@@ -248,7 +228,7 @@
 
 % nocite{*} includes all non-cited references
 \nocite{*}
-\bibliography{bibliography/solid, bibliography/pets, bibliography/middleware}
+\bibliography{bibliography/intro, bibliography/solid, bibliography/pets, bibliography/middleware}
 
 \end{document}
 

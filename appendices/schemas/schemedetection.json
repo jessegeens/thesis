@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/product.schema.json",
+  "title": "Schema for specifying detectable data schemes",
+  "description": "A JSON Schema for describing how configuration files that describe supported data schemes should look like. These configuration files describe how a data scheme should be detected and what privacy tactics should be applied to its fields",
+  "type": "object",
+  "properties": {
+	"schemeName": {
+	  "description": "The unique name of the data scheme",
+	  "type": "string"
+	},
+	"detector": {
+		"description": "Describes how the data scheme should be recognized",
+		"type": "object",
+		"properties": {
+			"contentRepresentation": {
+				"type": "string",
+				"description": "The content-representation of the input data. E.g. XML or JSON."
+			},
+			"scheme": {
+				"type": "string",
+				"description": "The name of data scheme being detected"
+			},
+			"mechanism": {
+				"type": "object",
+				"description": "How the data scheme should be detected",
+				"properties": {
+					"mechanismName": {
+						"type": "string",
+						"enum": ["filenameExact", "filenameContains", "bodyContains"]
+					},
+					"value": {
+						"type": "string",
+						"description": "The value on which the detection is based"
+					}
+				},
+				"required": ["mechanismName", "value"]
+			}
+		},
+		"required": ["contentRepresentation", "scheme", "mechanism"]
+	},
+	"transformations": {
+		"description": "Describes how the data should be transformed, according to the different privacy levels",
+		"type": "array",
+		"items": {
+			"type": "object",
+			"properties": {
+				"level": {
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 4
+				},
+				"tactics": {
+                  "type": "array",
+                  "items": {"$ref": "#/$defs/PET"}
+                }
+			},
+			"required": ["level", "tactics"]
+		}
+	}
+  },
+  "required": [ "schemeName", "detector", "transformations" ],
+  "$defs": {
+		"PET": {
+          	"type": "object",
+			"properties": {
+			"field": {
+				"type": "string"
+			},
+			"transformation": {
+				"type": "object",
+				"properties": {
+					"transformationName": {
+						"type": "string",
+						"enum": ["remove", "pseudonymization", "numAggregation", "strAggregation", "random"]
+					},
+					"pseudonym": {
+						"type": "string",
+						"description": "What to replace the field with"
+					},
+                "aggregationBounds": {
+                "type": "number",
+                "description": "The maximum percentual difference between the aggregated value and the orginial value. For example, if aggregationBounds is 10, then 77 has a max difference of 7, so 70 or 80 is allowed but 85 or 69 is not."
+            }
+				},
+				"required": ["transformationName"],
+				"allOf": [
+					{
+					"if": {
+						"properties": { "transformationName": { "const": "pseudonymization" } }
+					},
+					"then": {
+						"required": ["pseudonym"]
+					}
+					},
+                  	{
+					"if": {
+						"properties": { "transformationName": { "const": "numAggregation" } }
+					},
+					"then": {
+						"required": ["aggregationBounds"]
+					}
+					}
+				]
+			},
+			"fieldType": {
+				"type": "string",
+              	"enum": ["string", "integer", "float"]
+			}
+		},
+		"required": ["field", "transformation", "fieldType"]
+	}
+  }
+}

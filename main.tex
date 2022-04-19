@@ -1,12 +1,12 @@
 \documentclass[master=cws,masteroption=gs,english]{kulemt/kulemt}
-\setup{title={PePSA: A Privacy-enhancing Proxy for Solid Applications},
+\setup{title={Secure and Protected Data Aggregation in The Decentralized Web},
   author={Jesse Geens},
   promotor={Prof.\,dr.\,ir.\ W. Joosen \and dr. B. Lagaisse \and Prof. dr. V. Naessens},
   assessor={Ir.\,W. Eetveel\and W. Eetrest},
-  assistant={E. H. Beni \and A. Rafique}}
+  assistant={E. Heydari Beni \and K. Jannes}}
 % De volgende \setup mag verwijderd worden als geen fiche gewenst is.
 \setup{filingcard,
-  translatedtitle={Een privacy-verbeterende proxy voor Solid applicaties},
+  translatedtitle={Veilige en Beschermde Data Aggregatie in het Gedecentraliseerde Web},
   udc=621.3,
   shortabstract={Hier komt een heel bondig abstract van hooguit 500
     woorden. \LaTeX\ commando's mogen hier gebruikt worden. Blanco lijnen
@@ -17,6 +17,22 @@
 % Verwijder de "%" op de volgende lijn als je enkel de eerste pagina's wil
 % afdrukken en de rest bv. via Word aanmaken.
 %\setup{frontpagesonly}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Other interesting articles / sources %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% https://www.imec.be/nl/articles/data-mogen-niet-het-nieuwe-goud-zijn
+% https://www.vrt.be/vrtnws/nl/2022/01/03/solidlab/
+% 
+% Attr-based enc
+%%%%%%%%%%%%%%%%
+%
+% A. Sahai and B. Waters, “Fuzzy identity-based encryption,” in Advances in Cryptology - EUROCRYPT 2005, 24th Annual International Conference on the Theory and Applications of Cryptographic Techniques, Aarhus, Denmark, May 22-26, 2005, Proceedings, ser. Lecture Notes in Computer Science, R. Cramer, Ed., vol. 3494. Springer, 2005, pp. 457–473.
+% [2] V. Goyal, O. Pandey, A. Sahai, and B. Waters, “Attribute-based encryption for fine-grained access control of encrypted data,” in Proceedings of the 13th ACM Conference on Computer and Communications Security, CCS 2006, Alexandria, VA, USA, October 30 - November 3, 2006, A. Juels, R. N. Wright, and S. D. C. di Vimercati, Eds. ACM, 2006, pp. 89–98.
+% [3] J. Bethencourt, A. Sahai, and B. Waters, “Ciphertext-policy attributebased encryption,” in 2007 IEEE Symposium on Security and Privacy (S&P 2007), 20-23 May 2007, Oakland, California, USA. IEEE Computer Society, 2007, pp. 321–334.
+% [4] S. Wang, J. Zhou, J. K. Liu, J. Yu, J. Chen, and W. Xie, “An efficient file hierarchy attribute-based encryption scheme in cloud computing,” IEEE Trans. Inf. Forensics Secur., vol. 11, no. 6, pp. 1265–1277, 2016
 
 % Kies de fonts voor de gewone tekst, bv. Latin Modern
 \setup{font=lm}
@@ -57,7 +73,17 @@
 
 \newcounter{futurework}
 \newenvironment{futurework}[1][]{\refstepcounter{futurework}\par\medskip
-   \noindent \textbf{Future Work~\thefuturework #1} \rmfamily}{\medskip}
+   \noindent \textbf{FW~\thefuturework #1} \rmfamily}{\medskip}
+
+\newcounter{optionalreading}
+\newenvironment{optionalreading}[3][]{\refstepcounter{optionalreading}\par\medskip
+\begin{formal}
+\noindent \textbf{Optional reading~\theoptionalreading} $ - $ \textit{#1}\\
+\noindent #3
+\noindent \textit{Source}: #2
+\end{formal}}{\medskip}
+   
+
 
 % cite (author, year) style
 \usepackage{natbib}
@@ -78,7 +104,7 @@
 % Set todos in text
 \usepackage{todonotes}
 
-\include{appendices/architecture/vp-definitions}
+% \include{appendices/architecture/vp-definitions}
 
 %%%%%%%
 % Custom code listings
@@ -88,6 +114,9 @@
 
 % Enumerations with letters instead of numbers
 \usepackage{enumitem}
+
+% Subfigures
+\usepackage{subcaption}
 
 % Acronyms
 \usepackage[acronym,smallcaps]{glossaries}
@@ -106,30 +135,12 @@
 \definecolor{deepgreen}{rgb}{0,0.5,0}
 \definecolor{antiquewhite}{rgb}{0.98, 0.92, 0.84}
 
-\lstdefinestyle{turtle}{
-    %backgroundcolor = \color{antiquewhite},
-    basicstyle=\footnotesize,
-    numbers=left,
-    stepnumber=1,
-    % morecomment=[l]{\# },
-    %% TODO fix only comment if hashtag followed by space
-    keywordstyle=\footnotesize\color{deepblue},
-    emph={Authorization, agentClass, Agent, mode, Read, Write, Control, accessTo, agent},
-    morekeywords={acl, @prefix, foaf},             % Add keywords here
-    %keywordstyle=\color{green},
-    commentstyle=\itshape\color{orange},
-    %emphstyle=\footnotesize\color{deepred},    % Custom highlighting style
-     emphstyle={\color{deepgreen}},
-    stringstyle=\color{deepgreen},
-    frame=t,                         % Any extra options here
-    showstringspaces=false,
-}
-
 % Support for source code listings
 \usemintedstyle{autumn}
 
 \newenvironment{code}{\captionsetup{type=listing}}{}
-\SetupFloatingEnvironment{listing}{name=Listing}
+\renewcommand{\lstlistlistingname}{List of Code Fragments}
+%\SetupFloatingEnvironment{listing}{name=Listing}
 
 
 
@@ -150,6 +161,15 @@
 
 % No horizontal table overflows
 \usepackage{tabulary}
+
+% For drawing access tree structure with tikz
+\usepackage{tikz-qtree}
+
+%set default line width to 0.75pt     
+\tikzset{every picture/.style={line width=0.75pt}} 
+
+% Turn images 90 degrees
+\usepackage{rotating}
 
 %\includeonly{chap-n}
 \begin{document}
@@ -175,7 +195,8 @@
 %\renewcommand\listoflistingscaption{List of Source Codes}
 \makeatletter\@openrightfalse
 \listoffiguresandtables
-\listoflistings
+%\lstlistoflistings
+\addcontentsline{toc}{chapter}{\lstlistlistingname}{\lstlistoflistings}
 \printglossary[type=\acronymtype,title={List of Abbreviations}]
 \@openrighttrue\makeatother
 % De lijst van symbolen is eveneens optioneel.
@@ -206,17 +227,22 @@
 \include{chapters/1-intro}
 \include{chapters/2-background}
 \include{chapters/3-analysis}
-\include{chapters/4-requirements}
-\include{chapters/5-architecture}
+\include{chapters/4-privacy-filters}
+\include{chapters/5-macaroons-solid}
 \include{chapters/6-evaluation}
 \include{chapters/7-conclusion}
 
 % Indien er bijlagen zijn:
 %\appendixpage*          % indien gewenst
 \appendix
-\include{appendices/schemas/schemas}
-\include{appendices/architecture/diagrams}
-\include{appendices/architecture/catalog}
+\chapter{\middleware{} configuration and code}
+\include{appendices/privacylevels}
+\include{appendices/pepsa-config/filter-schema}
+\include{appendices/pepsa-config/kbcbank-filter}
+\include{appendices/pepsa-config/css-config}
+\include{appendices/solid-architecture/solid-architecture}
+%\include{appendices/architecture/diagrams}
+%\include{appendices/architecture/catalog}
 % ... en zo verder tot
 %\include{app-n}
 
@@ -227,8 +253,9 @@
 % Vanboven bij package import gedefinieerd
 
 % nocite{*} includes all non-cited references
-\nocite{*}
-\bibliography{bibliography/intro, bibliography/solid, bibliography/pets, bibliography/middleware}
+%\setcitestyle{numbers}
+%\nocite{*}
+\bibliography{bibliography/intro, bibliography/solid, bibliography/macaroons, bibliography/pets, bibliography/middleware, bibliography/code}
 
 \end{document}
 

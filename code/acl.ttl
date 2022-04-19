@@ -9,9 +9,7 @@
     acl:accessTo <./>;
     acl:mode acl:Read.
 
-# The owner has full access to every resource in their pod.
-# Other agents have no access rights,
-# unless specifically authorized in other .acl resources.
+# Only the owner has (full) access to every resource in their pod.
 <#owner>
     a acl:Authorization;
     acl:agent <https://pod.geens.cloud/podjesse/profile/card#me>;

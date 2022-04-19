@@ -1,0 +1,23 @@
+\begin{figure}[h]
+\centering
+\tikzset{every tree node/.style={minimum width=2em,draw,sibling distance=1em,rectangle,rounded corners,align=center},
+         blank/.style={draw=none},
+         edge from parent/.style=
+         {draw,edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}},
+         level distance=1.5cm}
+\begin{tikzpicture}
+\Tree
+[.or     
+    [.or 
+    \edge[]; [.patient ]
+    \edge[]; [.and
+             \edge[]; {doctor}
+             \edge[]; {hospital:UZLeuven}
+             \edge[]; {dep:cardiology}
+         ]
+    ]
+    [.admin ]
+]
+\end{tikzpicture}
+\caption{Example \acrshort{ABE} policy}
+\end{figure}

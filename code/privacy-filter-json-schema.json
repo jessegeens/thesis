@@ -1,7 +1,7 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/product.schema.json",
-  "title": "Schema for specifying detectable data schemes",
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://jesse.geens.cloud/privacyfilter.schema.json",
+  "title": "Schema for specifying privacy filters on detectable data schemes",
   "description": "A JSON Schema for describing how configuration files that describe supported data schemes should look like. These configuration files describe how a data scheme should be detected and what privacy tactics should be applied to its fields",
   "type": "object",
   "properties": {
@@ -15,7 +15,8 @@
 		"properties": {
 			"contentRepresentation": {
 				"type": "string",
-				"description": "The content-representation of the input data. E.g. XML or JSON."
+				"description": "The content-representation of the input data. E.g. XML or JSON.",
+				"enum": ["xml", "json", "ttl"]
 			},
 			"scheme": {
 				"type": "string",
@@ -26,8 +27,9 @@
 				"description": "How the data scheme should be detected",
 				"properties": {
 					"mechanismName": {
+						"description": "The mechanism which should be used for detecting a data scheme. `filenameExact` means an exact match of the file name. `containernameExact` matches all files that are in a container that matches the given name",
 						"type": "string",
-						"enum": ["filenameExact", "filenameContains", "bodyContains"]
+						"enum": ["filenameExact", "filenameContains", "bodyContains", "containernameExact"]
 					},
 					"value": {
 						"type": "string",
@@ -37,7 +39,7 @@
 				"required": ["mechanismName", "value"]
 			}
 		},
-		"required": ["contentRepresentation", "scheme", "mechanism"]
+		"required": ["contentRepresentation", "mechanism"]
 	},
 	"transformations": {
 		"description": "Describes how the data should be transformed, according to the different privacy levels",
@@ -55,7 +57,8 @@
                   "items": {"$ref": "#/$defs/PET"}
                 }
 			},
-			"required": ["level", "tactics"]
+			"required": ["level", "tactics"],
+			"additionalProperties": false
 		}
 	}
   },
@@ -72,16 +75,20 @@
 				"properties": {
 					"transformationName": {
 						"type": "string",
-						"enum": ["remove", "pseudonymization", "numAggregation", "strAggregation", "random"]
+						"enum": ["remove", "pseudonym", "perturbation", "hash", "encrypted", "random"]
 					},
 					"pseudonym": {
 						"type": "string",
 						"description": "What to replace the field with"
 					},
-                "aggregationBounds": {
-                "type": "number",
-                "description": "The maximum percentual difference between the aggregated value and the orginial value. For example, if aggregationBounds is 10, then 77 has a max difference of 7, so 70 or 80 is allowed but 85 or 69 is not."
-            }
+					"equalsCondition": {
+						"type": "array",
+						"description": "Only perform this transformation if the value is in the array"
+					},
+					"perturbationFactor": {
+						"type": "number",
+						"description": "The maximum difference between the perturbed value and the orginial value. For example, if perturbationFactor is 1.1, then for the value any difference of 10% is allowed, i.e., the resulting value will lie between 63 and 77"
+					}
 				},
 				"required": ["transformationName"],
 				"allOf": [
@@ -95,20 +102,21 @@
 					},
                   	{
 					"if": {
-						"properties": { "transformationName": { "const": "numAggregation" } }
+						"properties": { "transformationName": { "const": "perturbation" } }
 					},
 					"then": {
-						"required": ["aggregationBounds"]
+						"required": ["perturbationFactor"]
 					}
 					}
 				]
 			},
 			"fieldType": {
 				"type": "string",
-              	"enum": ["string", "integer", "float"]
+              	"enum": ["string", "integer", "float", "boolean"]
 			}
 		},
-		"required": ["field", "transformation", "fieldType"]
+		"required": ["field", "transformation", "fieldType"],
+		"additionalProperties": false
 	}
   }
 }

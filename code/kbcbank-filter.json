@@ -1,0 +1,84 @@
+{
+    "schemeName": "KBCTransactionData",
+     "detector": {
+         "contentRepresentation": "json",
+         "mechanism": {
+             "mechanismName": "containernameExact",
+             "value": "kbc-bank"
+         } },
+     "transformations": [ 
+         {
+             "level": 1,
+             "tactics": []
+         }, {
+        "level": 4,
+        "tactics": [ {
+                "field": "accountOwner",
+                "fieldType": "string",
+                "transformation": {
+                    "transformationName": "pseudonym",
+                    "pseudonym": "J.G."
+                }
+            }, {
+                "field": "IBAN",
+                "fieldType": "string",
+                "transformation": {
+                    "transformationName": "pseudonym",
+                    "pseudonym": "BE42429824824354"
+                }
+            }, {
+                "field": "saldo",
+                "fieldType": "float",
+                "transformation": {
+                    "transformationName": "perturbation",
+                    "perturbationFactor": 1.1
+                }
+            }, {
+                "field": "$.history[*].from",
+                "fieldType": "string",
+                "transformation": {
+                    "transformationName": "pseudonym",
+                    "pseudonym": "BE42429824824354",
+                    "equalsCondition": ["BE66123456783456"]
+                }
+            }, {
+                "field": "$.history[*].to",
+                "fieldType": "string",
+                "transformation": {
+                    "transformationName": "pseudonym",
+                    "pseudonym": "BE42429824824354",
+                    "equalsCondition": ["BE66123456783456"]
+                }
+            }, {
+                "field": "$.history[*].from_name",
+                "fieldType": "string",
+                "transformation": {
+                    "transformationName": "pseudonym",
+                    "pseudonym": "J.G.",
+                    "equalsCondition": ["Jesse Geens"]
+                }
+            }, {
+                "field": "$.history[*].to_name",
+                "fieldType": "string",
+                "transformation": {
+                    "transformationName": "pseudonym",
+                    "pseudonym": "J.G.",
+                    "equalsCondition": ["Jesse Geens"]
+                }
+            }, {
+                "field": "$.history[*].description",
+                "fieldType": "string",
+                "transformation": {
+                    "transformationName": "random",
+                    "equalsCondition": ["Ontduiking belastingen"]
+                }
+            }, {
+                "field": "$.history[*].amount",
+                "fieldType": "float",
+                "transformation": {
+                    "transformationName": "perturbation",
+                    "perturbationFactor": 10
+                } }
+        ] } 
+    ]
+}

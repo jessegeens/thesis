@@ -1,7 +1,7 @@
 \chapter{Macaroons as a Novel Access Token Mechanism in Solid}
 \label{cha:decentralized-delegation}
 
-Section \ref{sec:macaroons} gave an introduction to macaroons, a novel kind of access tokens. This chapter discusses ways in which macaroons can mediate the problems stipulated in section \ref{sec:problem-context}: lower computational cost, group vaults and decentralized delegation of access tokens. 
+Section \ref{sec:macaroons} gave an introduction to macaroons, a novel kind of access tokens. This chapter discusses ways in which macaroons can mediate the problems stipulated in section \ref{sec:problem-context}. Lower computational cost is realized by macaroons because of its hash-based signatures, instead of using public-key cryptography. Real performance gains of utilising macaroons instead of \gls{DPoP} are explored in section \ref{sec:macaroons-performance}. Using macaroons for realizing group vaults and decentralized delegation is explored in the next sections.
 
 \section{Group Vaults}
 \label{sec:group-vaults}
@@ -20,7 +20,7 @@ To verify the feasibility of using macaroons as access tokens for realizing effi
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/macaroons-solid/ComponentDiagram-Group-Vault-System-Overview.pdf}
+    \includegraphics[width=0.50\textwidth]{images/macaroons-solid/ComponentDiagram-Group-Vault-System-Overview.pdf}
     \caption{System Overview of a Group Vault architecture.}
     \label{fig:gv-sys-overview}
 \end{figure}
@@ -70,4 +70,30 @@ The On-Behalf-Of flow works as illustrated in figure \ref{fig:obo-flow} (protoco
 \subsection{Decentralized Delegation of Access Tokens using Macaroons}
 Macaroons have a number of interesting properties that make them suitable as an access token for realizing decentralized delegation of access token. Concretely, this decentralized delegation means that a Service A can delegate its access token to Service B, without having to contact the Token Endpoint for obtaining a new token.
 
+Delegation of macaroons works out-of-the-box, because by default macaroons are not bound to a specific client (nor is a proof-of-possession mechanism employed). Such restrictions must be added by adding caveats that restrict the macaroon's usage to a specific application (and a specific user, target resource, etc.). By default, macaroons can also be extended with additional caveats. This enables a service that wishes to delegate its access token to add additional constraints on the token usage (such as making it usable only once, adding a more strict time restriction, etc.).
 
+Since Solid uses OAuth as its authentication mechanism, a new access token mechanism should be compatible with OAuth. Fortunately, macaroons have already been used in production systems as access and refresh tokens. The original macaroons paper discusses macaroons in the context of OAuth \citep[p.12]{macaroons}, and the ForgeRock AM 7 Access Management system supports the use of macaroons as access tokens in OAuth\footnote{See \url{https://backstage.forgerock.com/docs/am/7/oauth2-guide/oauth2-macaroons.html}}.
+
+Realizing access delegation naively may lead to severe vulnerabilities, where tokens can be stolen. Therefore, delegation should be disabled by default by limiting a macaroon to a certain WebID (the application's WebID). An application that requests access delegation should include this information when requesting an access token, specifying the WebIDs of the third-party services. 
+
+Figure \ref{fig:decentralized-delegation-macaroon} illustrates the flow of delegating an access token in Solid, in the context of an aggregator.
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=1.0\textwidth]{images/macaroons-solid/InteractionDiagram-Decentralized-Delegation-of-Macaroon.pdf}
+    \caption{Decentralized Delegation of Macaroon in Solid Data Aggregator}
+    \label{fig:decentralized-delegation-macaroon}
+\end{figure}
+
+\noindent As can be seen in figure \ref{fig:decentralized-delegation-macaroon}, the \texttt{Aggregator} component does not need to contact \texttt{Alice's Solid Server} (the token endpoint) to generate a new macaroon to pass to the \texttt{AggregationWorker}. 
+
+Apart from not having to contact the token endpoint, the usage of macaroons in this context provides additional benefits as well. 
+Firstly, when the \texttt{Aggregator} derives a new macaroon to delegate, this can be confined to the concrete request very precisely. For instance, the derived macaroon can be limited to a specific resource (such as \texttt{health-data/01042022.json}), to a specific method (such as \texttt{GET}), and within a very specific time frame (such as in the next sixty seconds). 
+
+Additionally, combining macaroons with the privacy filters proposed in chapter \ref{cha:privacy-filters} also allows confining the tokens to a specific privacy level. In this way, a Solid server can rewrite the data to strip sensitive personal information even before passing it to the aggregator. This decreases the reliance on the aggregator to correctly perform such operations, increasing the trust level of aggregators. Furthermore, by already stripping a number of attributes in the Solid server, the system load of the aggregator is decreased since it must receive less data.
+
+Finally, macaroons also prove to be a very safe and secure method of handing out API keys. Traditionally, API keys (whether they are in the form of bearer tokens, \gls{JWT}s or other token types) require either extensive bookkeeping (in the case of bearer tokens) or verifying signatures (in the case of \gls{JWT}s) to verify whether they are valid. However, none of them offer good anti-theft mechanisms apart from token revocation. Unfortunately, such token thefts can often go unnoticed. However, since macaroons can be easily confined to an identifier (such as an IP address), they offer more extensive protection mechanisms. They also don't come with the downside of extensive bookkeeping for bearer tokens (since authorization limitations are embedded in the macaroon), and can be revoked easily by adding a caveat to check the token identifier in a revocation list.
+
+Concretely, the content of Macaroon 1 and Macaroon 2 would look like the macaroons presented in table \ref{table:delegated-macaroon}.
+
+\input{tables/delegated-macaroon}

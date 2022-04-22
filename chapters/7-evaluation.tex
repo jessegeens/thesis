@@ -1,0 +1,47 @@
+\chapter{Evaluation}
+\label{cha:evaluation}
+This chapter evaluates the solutions proposed in this thesis. The first section discusses some theoretical limitations of the proposed solutions. The second section will then benchmark the performance of the developed prototypes, to verify the impact of the proposed solutions compared to a vanilla version of the \acrlong{CSS}. Finally, the last section validates the proposed solutions in the context of the use cases presented in section \ref{sec:usecases}.
+
+\section{Theoretical limitations}
+\subsection{Privacy filters}
+Privacy filters are a mechanism to dynamically rewrite resources to improve privacy. The currently proposed solution comes with a number of limitations, which are listed below.\\
+
+\noindent \textbf{No write-back} Data is modified on a per-request basis, where certain attributes could be changed or removed. In the proposed solution, no mapping of this is kept (which might not even always be possible). As such, when an application modifies this data and tries to write it back, there is no way to reconcile these two versions. In the context of an aggregator that only reads data, this does not pose a problem, but it limits the use of privacy filters in other contexts.\\
+
+\noindent \textbf{Lack of domain knowledge} Often, domain knowledge is needed to construct useful transformations. For example, to strip out the user's name while keeping other names, it is necessary to know the user's name. Similarly, when information is made less specific (for example, replacing "Colruyt" with "supermarket"), it is important to have a mapping of such strings. This means that either users must add some necessary information to the privacy filter configuration files, or that localized filters (for example, containing information about Belgian supermarkets) should be sourced from somewhere.\\
+
+\noindent \textbf{Only structured data} Since privacy filters, in the proposed solution, work on a per-attribute basis, they do not support performing transformations on unstructured data. For such data, more sophisticated techniques ought to be used (such as machine learning models). Techniques for this already exist (such as \citet{privacy-unstructured-scoring} and \citet{privacy-preserving-unstructured}), but are complex to integrate and computationally very expensive to run on a per-request basis. \\
+
+\noindent \textbf{Data linkage} Privacy filters only work on a single resource/dataset. However, very often de-anonymization happens because multiple datasets are linked together. Privacy filter only provide limited protection against such information disclosures since resources are transformed on a one-by-one basis without looking at the complete picture. Fetching multiple resources from a single pod may disclose information that should have been filtered out.
+
+\subsection{Macaroons as access tokens}
+While macaroons offer a number of advantages as access tokens, there is no free lunch. Like any other solution, macaroons also come with disadvantages. This subsection lists a number of the most important disadvantages.\\
+
+\noindent \textbf{Verification requires trust} Verification of a macaroon happens by recomputing the signature of the macaroon, and confirming that the calculated signature matches the signature present in the macaroon. The first computed signature is computed based on the random nonce present in the macaroon and the \textit{root key}. As such, this implies that a service that wishes to verify a macaroon must be in possession of the root key (or delegate verification to another service that possesses the root key). 
+
+When the target service (the service that receives a request) is running on the same server as the service handing out the macaroon, this does not pose a problem. The \acrlong{CSS}, for example, works like this. However, scenarios were this is not the case are not impossible. For those scenarios, a mechanism must be devised where the verification is either delegated, or the service is trusted and receives the root key.\\
+
+\noindent \textbf{Caveats are not standardized} The original macaroons paper defined what a caveat is and how macaroons are composed, but it did not define a language to express caveats in. Neither does it define in what way macaroons should be serialized for transportation over the internet (such as base64). Due to this limitation, multiple, incompatible libraries exist for using macaroons. Furthermore, since the expression of caveats is not even dependent on the used library, services that require third-party attestations must make sure that caveats are expressed in the same way (since a discharge macaroon may also contain caveats). 
+
+Therefore, the Solid specification should be extended with definitions of which serialization should be used, and a unified way of representing caveats (for example, in \gls{RDF}) must be defined. These decisions have an impact on which existing libraries can be used, or whether custom libraries must be developed.
+
+%\subsection{Additional limitations}
+
+\section{Evaluation of the performance}
+This section discusses a number of benchmarking experiments that have been performed to evaluate the performance of the proposed middleware. The first experiment focuses on the overhead of running privacy filters on top of Solid, comparing the processing time with and without privacy filters. The second experiment measures the performance improvement of using macaroons instead of using \gls{DPoP}-based tokens. 
+
+\subsection{Experiments set-up}
+\subsubsection{Experiment 1: Overhead of privacy filters}
+The first experiment performed focuses on the overhead of running privacy filters on top of Solid. Therefore, a number of requests are sent to the Solid server, comparing the times it takes to fulfill the request between a version with privacy filters (running the privacy-enhancing middleware) and a vanilla version. To provide an overview of the performance overhead that is general enough (and not tied to one specific resource), requests are made to multiple resources, of different data types, content representations, ...
+
+\subsubsection{Experiment 2: Performance improvement of macaroons compared to DPoP}
+
+\subsection{Results}
+
+
+\section{Validation of use cases}
+\subsection{Exercise data}
+\subsection{Personal finance}
+\subsection{Aggregated view on personal health data streams}
+
+\section{Conclusion of evaluation}

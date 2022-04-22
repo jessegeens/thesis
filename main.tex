@@ -18,22 +18,6 @@
 % afdrukken en de rest bv. via Word aanmaken.
 %\setup{frontpagesonly}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Other interesting articles / sources %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% https://www.imec.be/nl/articles/data-mogen-niet-het-nieuwe-goud-zijn
-% https://www.vrt.be/vrtnws/nl/2022/01/03/solidlab/
-% 
-% Attr-based enc
-%%%%%%%%%%%%%%%%
-%
-% A. Sahai and B. Waters, “Fuzzy identity-based encryption,” in Advances in Cryptology - EUROCRYPT 2005, 24th Annual International Conference on the Theory and Applications of Cryptographic Techniques, Aarhus, Denmark, May 22-26, 2005, Proceedings, ser. Lecture Notes in Computer Science, R. Cramer, Ed., vol. 3494. Springer, 2005, pp. 457–473.
-% [2] V. Goyal, O. Pandey, A. Sahai, and B. Waters, “Attribute-based encryption for fine-grained access control of encrypted data,” in Proceedings of the 13th ACM Conference on Computer and Communications Security, CCS 2006, Alexandria, VA, USA, October 30 - November 3, 2006, A. Juels, R. N. Wright, and S. D. C. di Vimercati, Eds. ACM, 2006, pp. 89–98.
-% [3] J. Bethencourt, A. Sahai, and B. Waters, “Ciphertext-policy attributebased encryption,” in 2007 IEEE Symposium on Security and Privacy (S&P 2007), 20-23 May 2007, Oakland, California, USA. IEEE Computer Society, 2007, pp. 321–334.
-% [4] S. Wang, J. Zhou, J. K. Liu, J. Yu, J. Chen, and W. Xie, “An efficient file hierarchy attribute-based encryption scheme in cloud computing,” IEEE Trans. Inf. Forensics Secur., vol. 11, no. 6, pp. 1265–1277, 2016
-
 % Kies de fonts voor de gewone tekst, bv. Latin Modern
 \setup{font=lm}
 
@@ -196,7 +180,11 @@
 \makeatletter\@openrightfalse
 \listoffiguresandtables
 %\lstlistoflistings
-\addcontentsline{toc}{chapter}{\lstlistlistingname}{\lstlistoflistings}
+\addcontentsline{toc}{chapter}{\lstlistlistingname}{
+
+\lstlistoflistings
+
+}
 \printglossary[type=\acronymtype,title={List of Abbreviations}]
 \@openrighttrue\makeatother
 % De lijst van symbolen is eveneens optioneel.
@@ -229,8 +217,9 @@
 \include{chapters/3-analysis}
 \include{chapters/4-privacy-filters}
 \include{chapters/5-macaroons-solid}
-\include{chapters/6-evaluation}
-\include{chapters/7-conclusion}
+\include{chapters/6-middleware}
+\include{chapters/7-evaluation}
+\include{chapters/8-conclusion}
 
 % Indien er bijlagen zijn:
 %\appendixpage*          % indien gewenst
@@ -255,7 +244,7 @@
 % nocite{*} includes all non-cited references
 %\setcitestyle{numbers}
 %\nocite{*}
-\bibliography{bibliography/intro, bibliography/solid, bibliography/macaroons, bibliography/pets, bibliography/middleware, bibliography/code}
+\bibliography{bibliography/intro, bibliography/solid, bibliography/macaroons, bibliography/pets, bibliography/middleware, bibliography/code, bibliography/evaluation}
 
 \end{document}
 

@@ -1,0 +1,40 @@
+\begin{table}[!htb]
+   \centering
+    \begin{subtable}{.4\linewidth}
+      \centering
+        \begin{tabular}{|l|}
+        \hline
+        RANDOM\_NONCE                                       \\ \hline
+        location https://pods.org                           \\ \hline
+        identifier 3ff99779-720e...                         \\ \hline
+        cid user = alice                                    \\ \hline
+        cid operation = read                                \\ \hline
+        cid target = /health                                \\ \hline
+        cid expiry = 01-01-2024                             \\ \hline
+        cid webid = https://agg.com/...                     \\ \hline
+        cid privacy\_level = 3                              \\ \hline
+        sig ec35a6224861d2f83542c7f2...                     \\ \hline
+        \end{tabular}
+        \caption{Aggregator macaroon}
+    \end{subtable}%
+    \begin{subtable}{.6\linewidth}
+      \centering
+        \begin{tabular}{|l|}
+        \hline
+        RANDOM\_NONCE                                       \\ \hline
+        location https://pods.org                           \\ \hline
+        identifier 3ff99779-720e...                         \\ \hline
+        cid user = alice                                    \\ \hline
+        cid operation = read                                \\ \hline
+        cid target = /health/010422.json                    \\ \hline
+        cid expiry = 01-06-2022 17:04:02                    \\ \hline
+        cid webid = https://agg.com/...                     \\ \hline
+        cid privacy\_level = 3                              \\ \hline
+        cid ip = 193.190.253.145                            \\ \hline
+        sig b7da027f072ce6f5a64c35ab...                     \\ \hline
+        \end{tabular}
+        \caption{Derived macaroon}
+    \end{subtable} 
+    \caption{Illustration of macaroon delegation}
+    \label{table:delegated-macaroon}
+\end{table}

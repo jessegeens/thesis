@@ -1,73 +1,70 @@
 {
-    "@context": [
-      "https://linkedsoftwaredependencies.org/bundles/npm/pepsa-component/^0.0.1/components/context.jsonld",
-      "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^3.0.0/components/context.jsonld",
-      {
-        "pepsa-component": "urn:pepsa-component:default:",
-        "solid-server": "urn:solid-server:default:"
-      }
-    ],
-    "import": [
-      "files-scs:config/app/main/default.json",
-      "... (other imports here)"
-    ],
-    "@graph": [
-      {
-        "comment": "The main entry point into the main Solid behaviour.",
-        "@id": "urn:solid-server:default:LdpHandler",
-        "@type": "ParsingHttpHandler",
-        "args_requestParser": { "@id": "urn:solid-server:default:RequestParser" },
-        "args_metadataCollector": { "@id": "urn:solid-server:default:OperationMetadataCollector" },
-        "args_errorHandler": { "@id": "urn:solid-server:default:ErrorHandler" },
-        "args_responseWriter": { "@id": "urn:solid-server:default:ResponseWriter" },
-        "args_operationHandler": {
-          "@type": "AnonymizingHttpHandler",
-          "args_credentialsExtractor": { "@id": "urn:solid-server:default:CredentialsExtractor" },
-          "args_modesExtractor": { "@id": "urn:solid-server:default:ModesExtractor" },
-          "args_permissionReader": { "@id": "urn:solid-server:default:PermissionReader" },
-          "args_authorizer": { "@id": "urn:solid-server:default:Authorizer" },
-          "args_operationHandler": { "@id": "urn:solid-server:default:OperationHandler" },
-          "args_dataTreatmentHandler": {
-            "@id": "urn:pepsa-component:default:DataTreatmentHandler",
-            "@type": "DataTreatmentHandler",
-            "configMgr": { "@id": "urn:pepsa-component:default:ConfigurationManager" },
-            "tacticEncapsulator": {
-              "@id": "urn:pepsa-component:default:TacticEncapsulator",
-              "@type": "TacticEncapsulator",
-              "configMgr": { "@id": "urn:pepsa-component:default:ConfigurationManager" }
-            },
-            "parserSelector": {
-              "@id": "urn:pepsa-component:default:ParserSelector",
-              "@type": "ParserSelector",
-              "parsers": [
-                {
-                  "@id": "urn:pepsa-component:default:JSONParser",
-                  "@type": "JSONParser"
-                }, {
-                  "@id": "urn:pepsa-component:default:XMLParser",
-                  "@type": "XMLParser"
-                }, {
-                  "@id": "urn:pepsa-component:default:TurtleParser",
-                  "@type": "TurtleParser"
-                }
-              ]
+"@context": [ "https://linkedsoftwaredependencies.org/bundles/npm/pepsa-component/...",  "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/...",
+  {
+    "pepsa-component": "urn:pepsa-component:default:",
+    "solid-server": "urn:solid-server:default:"
+  }
+],
+"import": [
+  "files-scs:config/app/main/default.json",
+  "... (other imports here)"
+],
+"@graph": [
+  {
+    "comment": "The main entry point into the main Solid behaviour.",
+    "@id": "urn:solid-server:default:LdpHandler",
+    "@type": "ParsingHttpHandler",
+    "args_requestParser": { "@id": "urn:solid-server:default:RequestParser" },
+    "args_metadataCollector": { "@id": "urn:solid-server:default:OperationMetadataCollector" },
+    "args_errorHandler": { "@id": "urn:solid-server:default:ErrorHandler" },
+    "args_responseWriter": { "@id": "urn:solid-server:default:ResponseWriter" },
+    "args_operationHandler": {
+      "@type": "AnonymizingHttpHandler",
+      "args_credentialsExtractor": { "@id": "urn:solid-server:default:CredentialsExtractor" },
+      "args_modesExtractor": { "@id": "urn:solid-server:default:ModesExtractor" },
+      "args_permissionReader": { "@id": "urn:solid-server:default:PermissionReader" },
+      "args_authorizer": { "@id": "urn:solid-server:default:Authorizer" },
+      "args_operationHandler": { "@id": "urn:solid-server:default:OperationHandler" },
+      "args_dataTreatmentHandler": {
+        "@id": "urn:pepsa-component:default:DataTreatmentHandler",
+        "@type": "DataTreatmentHandler",
+        "configMgr": { "@id": "urn:pepsa-component:default:ConfigurationManager" },
+        "tacticEncapsulator": {
+          "@id": "urn:pepsa-component:default:TacticEncapsulator",
+          "@type": "TacticEncapsulator",
+          "configMgr": { "@id": "urn:pepsa-component:default:ConfigurationManager" }
+        },
+        "parserSelector": {
+          "@id": "urn:pepsa-component:default:ParserSelector",
+          "@type": "ParserSelector",
+          "parsers": [
+            {
+              "@id": "urn:pepsa-component:default:JSONParser",
+              "@type": "JSONParser"
+            }, {
+              "@id": "urn:pepsa-component:default:XMLParser",
+              "@type": "XMLParser"
+            }, {
+              "@id": "urn:pepsa-component:default:TurtleParser",
+              "@type": "TurtleParser"
             }
-          },
-          "args_configurationManager": {
-            "@id": "urn:pepsa-component:default:ConfigurationManager",
-            "@type": "ConfigurationManager",
-            "rootScheme": "../../config/schema/root.json",
-            "detectionScheme": "../../config/schema/detection.json",
-            "schemeRules": "../../config/scheme_rules",
-            "ups": {
-              "@id": "urn:pepsa-component:default:UserPreferenceStore",
-              "@type": "UserPreferenceStore",
-              "rs": {
-                "@id": "urn:solid-server:default:ResourceStore_Backend"
-              }
-            }
+          ]
+        }
+      },
+      "args_configurationManager": {
+        "@id": "urn:pepsa-component:default:ConfigurationManager",
+        "@type": "ConfigurationManager",
+        "rootScheme": "../../config/schema/root.json",
+        "detectionScheme": "../../config/schema/detection.json",
+        "schemeRules": "../../config/scheme_rules",
+        "ups": {
+          "@id": "urn:pepsa-component:default:UserPreferenceStore",
+          "@type": "UserPreferenceStore",
+          "rs": {
+            "@id": "urn:solid-server:default:ResourceStore_Backend"
           }
         }
       }
-    ]
-}
+    }
+  }
+]}

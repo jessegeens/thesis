@@ -1,0 +1,39 @@
+{  "tactics": [ {
+       "field":"$.history[*].amount",
+       "fieldType":"float",
+       "transformation":{
+          "transformationName":"perturbation",
+          "perturbationFactor":10 }
+    }, {
+       "field":"IBAN",
+       "fieldType":"string",
+       "transformation": {
+          "transformationName":"pseudonym",
+          "pseudonym":"BE42429824824354" }
+    }, {
+       "field":"$.history[*].timestamp",
+       "fieldType":"float",
+       "transformation":{ "transformationName":"remove" }
+    }, {
+       "field":"$.history[*].description",
+       "fieldType":"string",
+       "transformation":{ "transformationName":"random" }
+    }, {
+       "field":"$.history[*].from",
+       "fieldType":"string",
+       "transformation":{
+          "transformationName":"pseudonym",
+          "pseudonym":"NewName",
+          "equalsCondition":"Jesse Geens" }
+    }, {
+       "field":"currency",
+       "fieldType":"string",
+       "transformation":{ "transformationName":"random" }
+    }, {
+       "field":"from",
+       "fieldType":"string",
+       "transformation":{
+          "transformationName":"pseudonym",
+          "pseudonym":"NewName",
+          "equalsCondition":"Jesse Geens" }
+    } ] }

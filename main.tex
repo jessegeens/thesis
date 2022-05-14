@@ -1,5 +1,5 @@
 \documentclass[master=cws,masteroption=gs,english]{kulemt/kulemt}
-\setup{title={Secure and Protected Data Aggregation in The Decentralized Web},
+\setup{title={Secure and Protected Data Aggregation in the Decentralized Web},
   author={Jesse Geens},
   promotor={Prof.\,dr.\,ir.\ W. Joosen \and dr. B. Lagaisse \and Prof. dr. V. Naessens},
   assessor={Ir.\,W. Eetveel\and W. Eetrest},
@@ -22,7 +22,8 @@
 \setup{font=lm}
 
 %% TODO come up with name and insert it here
-\newcommand{\middleware}{PePSA}
+\newcommand{\mwprivacy}{PePSA}
+\newcommand{\middleware}{MASS}
 
 % PassOptionsToPackage fixes line breaks in URLs
 \PassOptionsToPackage{hyphens}{url}\usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
@@ -36,38 +37,45 @@
 % for formal definitions
 \usepackage{framed}
 
+% Fix "no room for new write" error
+\usepackage{morewrites}
+
+% Fancy quote in preface
+\makeatletter
+%\renewcommand{\@chapapp}{}% Not necessary...
+\newenvironment{fancyquote}[2][2em]
+  {\setlength{\@tempdima}{#1}%
+   \def\fancyquote@author{#2}%
+   \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
+   \itshape}
+  {\par\normalfont\hfill--\ \fancyquote@author\hspace*{\@tempdima}\par\bigskip}
+\makeatother
+
 % environment derived from framed.sty: see leftbar environment definition
-\newenvironment{formal}{%
-  \def\FrameCommand{%
-    \definecolor{formalshade}{rgb}{0.95,0.95,1}
-    \definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
-    \hspace{1pt}%
-    {\color{darkblue}\vrule width 2pt}%
-    {\color{formalshade}\vrule width 4pt}%
-    \colorbox{formalshade}%
-  }%
-  \MakeFramed{\advance\hsize-\width\FrameRestore}%
-  \noindent\hspace{-4.55pt}% disable indenting first paragraph
-  \begin{adjustwidth}{}{7pt}%
-  \vspace{2pt}\vspace{2pt}%
-}
-{%
-  \vspace{2pt}\end{adjustwidth}\endMakeFramed%
-}
+%\newenvironment{formal}{%
+%  \def\FrameCommand{%
+%    \definecolor{formalshade}{rgb}{0.95,0.95,1}
+%    \definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
+%    \hspace{1pt}%
+%    {\color{darkblue}\vrule width 2pt}%
+%    {\color{formalshade}\vrule width 4pt}%
+%    \colorbox{formalshade}%
+%  }%
+%  \MakeFramed{\advance\hsize-\width\FrameRestore}%
+%  \noindent\hspace{-4.55pt}% disable indenting first paragraph
+%  \begin{adjustwidth}{}{7pt}%
+%  \vspace{2pt}\vspace{2pt}%
+%}
+%{%
+%  \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+%}
 
 \newcounter{futurework}
 \newenvironment{futurework}[1][]{\refstepcounter{futurework}\par\medskip
    \noindent \textbf{FW~\thefuturework #1} \rmfamily}{\medskip}
 
-\newcounter{optionalreading}
-\newenvironment{optionalreading}[3][]{\refstepcounter{optionalreading}\par\medskip
-\begin{formal}
-\noindent \textbf{Optional reading~\theoptionalreading} $ - $ \textit{#1}\\
-\noindent #3
-\noindent \textit{Source}: #2
-\end{formal}}{\medskip}
-   
-
+% multi-column enumerate in evaluation
+\usepackage{multicol}
 
 % cite (author, year) style
 \usepackage{natbib}
@@ -99,6 +107,11 @@
 % Enumerations with letters instead of numbers
 \usepackage{enumitem}
 
+% For optional reading section
+\usepackage[most]{tcolorbox}
+\definecolor{myblue}{RGB}{0, 151, 238}
+\definecolor{accent}{RGB}{87, 255, 220}
+
 % Subfigures
 \usepackage{subcaption}
 
@@ -112,12 +125,6 @@
 % Default fixed font does not support bold face
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
 \DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
-
-% Language support for turtle
-\definecolor{deepblue}{rgb}{0,0,0.5}
-\definecolor{deepred}{rgb}{0.6,0,0}
-\definecolor{deepgreen}{rgb}{0,0.5,0}
-\definecolor{antiquewhite}{rgb}{0.98, 0.92, 0.84}
 
 % Support for source code listings
 \usemintedstyle{autumn}
@@ -151,6 +158,11 @@
 
 %set default line width to 0.75pt     
 \tikzset{every picture/.style={line width=0.75pt}} 
+
+% Draw boxplots
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.8}
+\usepgfplotslibrary{statistics}
 
 % Turn images 90 degrees
 \usepackage{rotating}
@@ -215,9 +227,9 @@
 \include{chapters/1-intro}
 \include{chapters/2-background}
 \include{chapters/3-analysis}
-\include{chapters/4-privacy-filters}
-\include{chapters/5-macaroons-solid}
-\include{chapters/6-middleware}
+\include{chapters/4-solution-overview}
+\include{chapters/5-privacy-filters}
+\include{chapters/6-macaroons-solid}
 \include{chapters/7-evaluation}
 \include{chapters/8-conclusion}
 
@@ -229,6 +241,7 @@
 \include{appendices/pepsa-config/filter-schema}
 \include{appendices/pepsa-config/kbcbank-filter}
 \include{appendices/pepsa-config/css-config}
+\include{appendices/performed-transformations}
 \include{appendices/solid-architecture/solid-architecture}
 %\include{appendices/architecture/diagrams}
 %\include{appendices/architecture/catalog}

@@ -1,0 +1,45 @@
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{figure}[h]
+\centering
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,235); %set diagram left start at 0, and has height of 235
+
+%Flowchart: Process [id:dp44010050957566904] 
+\draw   (7,87) -- (165,87) -- (165,207.8) -- (7,207.8) -- cycle ;
+%Image [id:dp32587235049649566] 
+\draw (82,144.4) node  {\includegraphics[width=42pt,height=44.1pt]{images/evaluation/experiment-setup/firefox.png}};
+%Shape: Rectangle [id:dp5390892627464089] 
+\draw   (306,87) -- (544,87) -- (544,208.8) -- (306,208.8) -- cycle ;
+%Image [id:dp0799386293991241] 
+\draw (351,141.9) node  {\includegraphics[width=93pt,height=64.65pt]{images/evaluation/experiment-setup/Nginx-1.png}};
+%Image [id:dp6980684981621853] 
+\draw (493.5,141.9) node  {\includegraphics[width=48.75pt,height=44.1pt]{images/evaluation/experiment-setup/solid-emblem.png}};
+%Straight Lines [id:da06368605607749478] 
+\draw    (164,150.8) -- (304,150.8) ;
+\draw [shift={(306,150.8)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da6116531951546007] 
+\draw    (382,150.8) -- (455,150.8) ;
+\draw [shift={(457,150.8)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (59,91) node [anchor=north west][inner sep=0.75pt]   [align=left] {Client};
+% Text Node
+\draw (15,180.4) node [anchor=north west][inner sep=0.75pt]  [font=\small] [align=left] {Firefox v99.0.1 (64-bit)};
+% Text Node
+\draw (398,91) node [anchor=north west][inner sep=0.75pt]   [align=left] {Server};
+% Text Node
+\draw (309,166.4) node [anchor=north west][inner sep=0.75pt]  [font=\small] [align=left] { \ \ \ \ Nginx\\ \ reverse proxy};
+% Text Node
+\draw (456,166.4) node [anchor=north west][inner sep=0.75pt]  [font=\small] [align=left] {Community\\Solid Server};
+% Text Node
+\draw (205,128) node [anchor=north west][inner sep=0.75pt]   [align=left] {HTTPS};
+% Text Node
+\draw (395,128) node [anchor=north west][inner sep=0.75pt]   [align=left] {HTTP};
+\end{tikzpicture}
+\caption{Set-up for Privacy Filter performance benchmark}
+\label{fig:exp-setup}
+
+\end{figure}

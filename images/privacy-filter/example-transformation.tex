@@ -1,0 +1,67 @@
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \begin{minted}[linenos,tabsize=2,breaklines]{json}
+{
+"accountOwner": "Jesse Geens",
+"IBAN": "BE66123456783456",
+"saldo": 665.53,
+"currency": "EUR",
+"history": [
+    {
+    "from": "BE17954824458821",
+    "to": "BE66123456783456",
+    "from_name": "Mark Jansen",
+    "to_name": "Jesse Geens",
+    "amount": 33.7,
+    "timestamp": 1645447425,
+    "description": "Payback borrowed money"
+    }, {
+    "from": "BE66123456783456",
+    "to": "BE15954347627130",
+    "from_name": "Jesse Geens",
+    "to_name": "Steffie Smits",
+    "amount": 10.0,
+    "timestamp": 1645440365,
+    "description": "Drinks"
+    }
+]}
+  \end{minted}
+  \caption{Data before applying privacy filter}
+  \label{fig:data-before-privacy-filter}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \begin{minted}[linenos,tabsize=2,breaklines]{json}
+{
+"accountOwner": "J.G.",
+"IBAN": "BE42429824824354",
+"saldo": 712.1171,
+"currency": "EUR",
+"history": [
+    {
+    "from": "BE17954824458821",
+    "to": "BE42429824824354",
+    "from_name": "Mark Jansen",
+    "to_name": "J.G.",
+    "amount": 34.8,
+    "timestamp": 1645440000,
+    "description": "Payback borrowed money"
+    }, {
+    "from": "BE42429824824354",
+    "to": "BE15954347627130",
+    "from_name": "J.G.",
+    "to_name": "Steffie Smits",
+    "amount": 9.45,
+    "timestamp": 1645440000,
+    "description": "Drinks"
+    }
+]}
+  \end{minted}
+  \caption{Data after applying privacy filter}
+  \label{fig:data-after-privacy-filter}
+\end{subfigure}
+\caption{Example of data treatment by privacy filter, applied to financial transactions data}
+\label{fig:example-treatment-privacy-filter}
+\end{figure}

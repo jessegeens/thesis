@@ -1,0 +1,68 @@
+\begin{figure}[H]
+\centering
+  \begin{tikzpicture}
+      \begin{axis}
+        [
+        %width=.8\textwidth,
+        %ytick={5000, 7500, 10000, 12500, 15000, 17500, 20000},
+        %yticklabels={0, 3000, 6000, 9000, 12000},
+        %ymode=log,
+        /pgf/number format/.cd,
+        use comma,
+        1000 sep={\,},
+        scaled y ticks = false,
+        %grid style=dashed,
+        %log ticks with fixed point,
+        boxplot/draw direction=y,
+        boxplot={
+            box extend=0.3,
+        },
+        x=1.8cm,
+        xtick={1, 2, 3, 4},
+        xticklabels={1, 3, 5, 7},
+        cycle list={{black,fill=orange},{black,fill=teal},{black,fill=olive},{black,fill=violet}},
+        legend pos=north east,
+        %legend entries = {Macaroons, DPoP (ES256), DPoP (PS256)},
+        name = border
+        ]
+        \addplot+[
+        boxplot prepared={
+          median=7089,
+          upper quartile=7444.75,
+          lower quartile=6833.5,
+          upper whisker=8149.35,
+          lower whisker=4839
+        },
+        ] coordinates {};
+        \addplot+[
+        boxplot prepared={
+          median=11172,
+          upper quartile=11647.25,
+          lower quartile=10765.25,
+          upper whisker=12914.55,
+          lower whisker=9622
+        },
+        ] coordinates {};
+        \addplot+[
+        boxplot prepared={
+          median=19290.5,
+          upper quartile=20937,
+          lower quartile=18030,
+          upper whisker=22816.3,
+          lower whisker=15962
+        },
+        ] coordinates {};
+         \addplot+[
+        boxplot prepared={
+          median=18604.5,
+          upper quartile=19284,
+          lower quartile=18105.5,
+          upper whisker=20509.25,
+          lower whisker=17161
+        },
+        ] coordinates {};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Boxplot of request durations (in ms, y-axis) with a different number of transformations performed (x-axis)}.
+    \label{fig:boxplot-diff-tactics}
+\end{figure}

@@ -1,0 +1,37 @@
+\begin{table}[H]
+\begin{subtable}{1.0\textwidth}
+\centering
+\begin{tabular}{lllll}
+\textbf{No. of attributes} & \textbf{10} & \textbf{100} & \textbf{1 000} & \textbf{10 000} \\ \hline
+Response length (bytes)    & 3 582        & 32 941        & 326 464        & 3 175 105        \\
+Average duration (ms)      & 146,66      & 192,55       & 307,27        & 1 059,46        \\
+Max. duration (ms)         & 500         & 518          & 659           & 2 305           \\
+Min. duration (ms)         & 83          & 99           & 176           & 782            \\
+Std. dev (ms)              & 79,71       & 74,81        & 101,65        & 222,25         \\
+95th percentile (ms)       & 277,3       & 314,55       & 448,5         & 1 423,55       
+\end{tabular}
+\caption{Performance overview of unmodified \acrshort{CSS} when requesting transaction data}
+\label{table:results-vanilla-json}
+\end{subtable}
+
+\vspace*{0.5 cm}
+
+\begin{subtable}{1.0\textwidth}
+\centering
+\begin{tabular}{lllll}
+\textbf{No. of attributes} & \textbf{10} & \textbf{100} & \textbf{1 000} & \textbf{10 000} \\ \hline
+Response length (bytes)    & 7 321       & 61 028       & 598 887        & 6 005 836       \\
+Average duration (ms)      & 157,91      & 197,74       & 350,37         & 1 604,83         \\
+Max. duration (ms)         & 468         & 541          & 729            & 3 309           \\
+Min. duration (ms)         & 77          & 100          & 210            & 1173            \\
+Std. dev (ms)              & 90,47       & 93,45        & 105,30         & 313,36          \\
+95th percentile (ms)       & 401,9       & 394,6        & 581,95         & 2 203,2        
+\end{tabular}
+\caption{Performance overview of unmodified \acrshort{CSS} when requesting exercise data}
+\label{table:results-vanilla-xml}
+\end{subtable}
+
+\caption{Overview of performance of unmodified \acrshort{CSS}}
+\label{table:results-exp1-unmodified}
+
+\end{table}

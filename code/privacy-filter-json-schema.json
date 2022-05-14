@@ -1,122 +1,121 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema",
-  "$id": "https://jesse.geens.cloud/privacyfilter.schema.json",
-  "title": "Schema for specifying privacy filters on detectable data schemes",
-  "description": "A JSON Schema for describing how configuration files that describe supported data schemes should look like. These configuration files describe how a data scheme should be detected and what privacy tactics should be applied to its fields",
-  "type": "object",
-  "properties": {
-	"schemeName": {
-	  "description": "The unique name of the data scheme",
-	  "type": "string"
-	},
-	"detector": {
-		"description": "Describes how the data scheme should be recognized",
-		"type": "object",
-		"properties": {
-			"contentRepresentation": {
-				"type": "string",
-				"description": "The content-representation of the input data. E.g. XML or JSON.",
-				"enum": ["xml", "json", "ttl"]
-			},
-			"scheme": {
-				"type": "string",
-				"description": "The name of data scheme being detected"
-			},
-			"mechanism": {
-				"type": "object",
-				"description": "How the data scheme should be detected",
-				"properties": {
-					"mechanismName": {
-						"description": "The mechanism which should be used for detecting a data scheme. `filenameExact` means an exact match of the file name. `containernameExact` matches all files that are in a container that matches the given name",
-						"type": "string",
-						"enum": ["filenameExact", "filenameContains", "bodyContains", "containernameExact"]
-					},
-					"value": {
-						"type": "string",
-						"description": "The value on which the detection is based"
-					}
-				},
-				"required": ["mechanismName", "value"]
-			}
-		},
-		"required": ["contentRepresentation", "mechanism"]
-	},
-	"transformations": {
-		"description": "Describes how the data should be transformed, according to the different privacy levels",
-		"type": "array",
-		"items": {
-			"type": "object",
-			"properties": {
-				"level": {
-					"type": "integer",
-					"minimum": 1,
-					"maximum": 4
-				},
-				"tactics": {
-                  "type": "array",
-                  "items": {"$ref": "#/$defs/PET"}
-                }
-			},
-			"required": ["level", "tactics"],
-			"additionalProperties": false
-		}
-	}
+  "$schema":"https://json-schema.org/draft-07/schema",
+  "$id":"https://jesse.geens.cloud/privacyfilter.schema.json",
+  "title":"Schema for specifying privacy filters on detectable data schemes",
+  "type":"object",
+  "properties":{
+    "schemeName":{
+      "description":"The unique name of the data scheme",
+      "type":"string"
+    },
+    "detector":{
+      "description":"Describes how the data scheme should be recognized",
+      "type":"object",
+      "properties":{
+        "contentRepresentation":{
+          "type":"string",
+          "description":"The content-representation of the input data. E.g. XML or JSON.",
+          "enum":[ "xml", "json", "ttl" ]
+        },
+        "scheme":{
+          "type":"string",
+          "description":"The name of data scheme being detected"
+        },
+        "mechanism":{
+          "type":"object",
+          "description":"How the data scheme should be detected",
+          "properties":{
+            "mechanismName":{
+              "type":"string",
+              "enum":[ "filenameExact", "filenameContains",
+                "bodyContains", "containernameExact" ]
+            },
+            "value":{
+              "type":"string",
+              "description":"The value on which the detection is based"
+            }
+          },
+          "required":[ "mechanismName", "value" ]
+        }
+      },
+      "required":[ "contentRepresentation",  "mechanism" ]
+    },
+    "transformations":{
+      "type":"array",
+      "items":{
+        "type":"object",
+        "properties":{
+          "level":{
+            "type":"integer",
+            "minimum":1,
+            "maximum":4
+          },
+          "tactics":{
+            "type":"array",
+            "items":{ "$ref":"#/$defs/PET" }
+          }
+        },
+        "required":[ "level", "tactics" ],
+        "additionalProperties":false
+      }
+    }
   },
-  "required": [ "schemeName", "detector", "transformations" ],
-  "$defs": {
-		"PET": {
-          	"type": "object",
-			"properties": {
-			"field": {
-				"type": "string"
-			},
-			"transformation": {
-				"type": "object",
-				"properties": {
-					"transformationName": {
-						"type": "string",
-						"enum": ["remove", "pseudonym", "perturbation", "hash", "encrypted", "random"]
-					},
-					"pseudonym": {
-						"type": "string",
-						"description": "What to replace the field with"
-					},
-					"equalsCondition": {
-						"type": "array",
-						"description": "Only perform this transformation if the value is in the array"
-					},
-					"perturbationFactor": {
-						"type": "number",
-						"description": "The maximum difference between the perturbed value and the orginial value. For example, if perturbationFactor is 1.1, then for the value any difference of 10% is allowed, i.e., the resulting value will lie between 63 and 77"
-					}
-				},
-				"required": ["transformationName"],
-				"allOf": [
-					{
-					"if": {
-						"properties": { "transformationName": { "const": "pseudonymization" } }
-					},
-					"then": {
-						"required": ["pseudonym"]
-					}
-					},
-                  	{
-					"if": {
-						"properties": { "transformationName": { "const": "perturbation" } }
-					},
-					"then": {
-						"required": ["perturbationFactor"]
-					}
-					}
-				]
-			},
-			"fieldType": {
-				"type": "string",
-              	"enum": ["string", "integer", "float", "boolean"]
-			}
-		},
-		"required": ["field", "transformation", "fieldType"],
-		"additionalProperties": false
-	}
+  "required":[  "schemeName", "detector", "transformations" ],
+  "$defs":{
+    "PET":{
+      "type":"object",
+      "properties":{
+        "field":{
+          "type":"string"
+        },
+        "transformation":{
+          "type":"object",
+          "properties":{
+            "transformationName":{
+              "type":"string",
+              "enum":[ "remove", "pseudonym",  "perturbation",
+                "hash", "encrypted", "random" ]
+            },
+            "pseudonym":{
+              "type":"string",
+              "description":"What to replace the field with"
+            },
+            "equalsCondition":{
+              "type":"array",
+              "description":"Only perform this transformation if the value is in the array"
+            },
+            "perturbationFactor":{
+              "type":"number",
+              "description":"The maximum relative difference between the perturbed value and the orginial value."
+            }
+          },
+          "required":[ "transformationName" ],
+          "allOf":[
+            {
+              "if":{
+                "properties":{
+                  "transformationName":{ "const":"pseudonymization" }
+                }
+              },
+              "then":{ "required":[ "pseudonym" ] }
+            },
+            {
+              "if":{
+                "properties":{
+                  "transformationName":{ "const":"perturbation" }
+                }
+              },
+              "then":{ "required":[ "perturbationFactor" ] }
+            }
+          ]
+        },
+        "fieldType":{
+          "type":"string",
+          "enum":[ "string", "integer", "float", "boolean" ]
+        }
+      },
+      "required":[ "field", "transformation", "fieldType" ],
+      "additionalProperties":false
+    }
   }
 }

@@ -3,6 +3,7 @@
 This chapter evaluates the solutions proposed in this thesis. The first section discusses some theoretical limitations of the proposed solutions. The second section will then benchmark the performance of the developed prototypes, to verify the impact of the proposed solutions compared to a vanilla version of the \acrlong{CSS}. Finally, the last section validates the proposed solutions in the context of the use cases presented in section \ref{sec:usecases}.
 
 \section{Theoretical limitations}
+\label{sec:limitations}
 \subsection{Privacy filters}
 Privacy filters are a mechanism to dynamically rewrite resources to improve privacy. The currently proposed solution comes with a number of limitations, which are listed below.\\
 
@@ -28,20 +29,150 @@ Therefore, the Solid specification should be extended with definitions of which 
 %\subsection{Additional limitations}
 
 \section{Evaluation of the performance}
-This section discusses a number of benchmarking experiments that have been performed to evaluate the performance of the proposed middleware. The first experiment focuses on the overhead of running privacy filters on top of Solid, comparing the processing time with and without privacy filters. The second experiment measures the performance improvement of using macaroons instead of using \gls{DPoP}-based tokens. 
+This section discusses a number of benchmarking experiments that have been performed to evaluate the performance of the proposed middleware. The first experiment focuses on the overhead of running privacy filters on top of Solid, comparing the processing time with and without privacy filters. The second experiment measures the performance improvement of using macaroons instead of using \gls{DPoP}-based tokens. The last experiment focuses on a theoretical improvement in the number of interactions necessary for delegating an access token.
+The code for the first two experiments can be found at \url{https://github.com/jessegeens/thesis-experiments}.
 
-\subsection{Experiments set-up}
-\subsubsection{Experiment 1: Overhead of privacy filters}
-The first experiment performed focuses on the overhead of running privacy filters on top of Solid. Therefore, a number of requests are sent to the Solid server, comparing the times it takes to fulfill the request between a version with privacy filters (running the privacy-enhancing middleware) and a vanilla version. To provide an overview of the performance overhead that is general enough (and not tied to one specific resource), requests are made to multiple resources, of different data types, content representations, ...
+\subsection{Experiment 1: Overhead of privacy filters}
+\label{sec:privacy-filter-performance}
+\subsubsection{Experiment set-up}
+The goal of the first experiment is measuring the overhead of running privacy filters on top of Solid. Therefore, a number of requests are sent to the Solid server, comparing the times it takes to fulfill the request between a version with privacy filters (running the privacy-enhancing middleware) and a vanilla version. To provide an overview of the performance overhead that is general enough, the experiments have been run as follows:
+\begin{enumerate}
+    \item Every request has been sent $100$ times
+    \item Two types of resources have been requested, financial data (from the finance use case) and exercise data (from the exercise use case)
+    \item For every resource type, the number of attributes of the resource has been varied from $10$ to $10 000$
+    \item For a fixed resource, the number of transformations has been varied from $1$ to $7$
+\end{enumerate}
 
-\subsubsection{Experiment 2: Performance improvement of macaroons compared to DPoP}
+\noindent The measured times are in milliseconds, and correspond to the complete end-to-end time (i.e., the time from when the request is sent out at the client to the time when it receives a response). To simulate a realistic environment, the set-up of the experiments is as follows:
 
-\subsection{Results}
+\noindent \input{images/evaluation/experiment-setup/experiment-setup}
+
+\noindent The laptop uses an i5-6200U CPU with 16GB of memory, running on Manjaro Linux v21.2.6. The server runs on a DigitalOcean droplet\footnote{See: \url{https://www.digitalocean.com/products/droplets}} with 2 vCPUs and 4GB of memory. Since JavaScript is a single-threaded language, 2 CPU cores should be sufficient. The server runs on Ubuntu Server v21.10, which runs the \acrlong{CSS} version 2.0.1 on NodeJS version 12.22.5.
+
+Two types of resources have been requested, with varying numbers of attributes (from 10 to 10 000). The data contained in these resources has been generated randomly\footnote{The code used for generating this data can be found at \url{https://github.com/jessegeens/data-generator}}. These generate files of sizes between 3KB and 3MB (or 900 000 lines for the largest files). An example of an attribute in both resources is:
+\begin{figure}[H]
+\centering
+\subcaptionbox{Attribute for transaction data (JSON)}%
+  [.8\textwidth]{\inputminted[linenos,tabsize=2,breaklines]{json}{code/ex-attr-txdata.json}}
+\subcaptionbox{Attribute for exercise data (XML)}
+  [.8\textwidth]{ \inputminted[linenos,tabsize=2]{xml}{code/ex-attr-tcx.xml}}
+\caption{Example data attributes of resources.}
+\label{fig:example-attributes}
+\end{figure}
+
+\noindent To study the effect of the number of applied transformations, this number has also been varied. When no variation is done, we opted to use three transformations. Otherwise, when $n$ transformations have been applied, these are the first $n$ of the transformations listed in listing \ref{listing:performed-transformations} in the appendix.
+
+\subsubsection{Results}
+\input{tables/results-exp1-unmodified}
+\input{tables/results-exp1-modified}
+
+\input{images/evaluation/boxplot-exp1}
+%\input{images/evaluation/boxplot-exp1-logarithmic}
+\input{images/evaluation/boxplot-exp1-difftactics}
+%\input{images/evaluation/boxplot-exp1-xml}
+
+\subsubsection{Discussion}
+As the first part of the experiment clearly demonstrates, running privacy filters comes\todo{TODO: re-run experiment for 5 tactics as this data seems a bit sketchy} with a serious performance overhead. For large resources, running privacy filters seems to increase the request duration with a factor of six. For smaller resources, this difference is much less: when we consider 100 attributes, request durations only increase with a factor of 1.5. This is likely due to the fact that for smaller resources, the transit time of the resource (i.e., when it is being transmitted over the internet) forms a large part of the duration. For the very large resources, this forms only a smaller part of the request duration.
+
+The second part of the expirement, where the number of performed transformations was varied, highlights that increasing the number of performed transformations has a degrading effect and there are thus severe limitations on how many transformations can be performed. In some cases, this is a severe weakness, since for some use cases many transformations are needed (e.g. transforming the name of a large number of supermarkets).
+
+This limitation, however, is partially due to an inefficient implementation of how these filters are applied; for every filter, an iteration over the complete resource is performed. This leads to a time complexity of $\mathcal{O}(nt)$, with $t$ transformations over a resource of $n$ attributes. This limitation is caused by the library that is used in the prototype to perform the transformations, and as such, this issue can be partially resolved by using a more efficient algorithm and data structure.
+
+Furthermore, the overhead can also be reduced by using \textit{precomputations}, where transformed files are computed beforehand and stored, so that the transformations need not happen at runtime. However, this comes with a significantly increased memory / storage cost and can as such only be done for large files, that are requested often or that come with a large number of transformations that must be applied. Caching strategies may aid here as well, but are not useful for the first request. 
+
+
+\newpage
+\subsection{Experiment 2: Performance improvement of macaroons compared to DPoP}
+\label{sec:macaroons-performance}
+\subsubsection{Experiment set-up}
+The goal of this experiment is to evaluate the performance gain of using macaroons instead of \gls{DPoP} as access tokens. The time it takes to generate and verify tokens is compared. Concretely, this is realized by measuring the throughput of token generation and verification (i.e. how many tokens per second can be generated or verified). 
+
+For macaroons, the \textit{macaroons.js}\footnote{\url{https://www.npmjs.com/package/macaroons.js}} library is used. For generating the \gls{DPoP} tokens, a modified version\footnote{The main modification was making use of the Node Crypto API instead of the WebCrypto API} of the \textit{dpop}\footnote{\url{https://www.npmjs.com/package/dpop}} library is used. Verification of \gls{DPoP} tokens relies on the \textit{jose}\footnote{\url{https://www.npmjs.com/package/jose}} library, and follows an implementation similar to what is used in the \textit{solid-access-token-verifier}\footnote{\url{https://www.npmjs.com/package/@solid/access-token-verifier}} (but without dereferencing WebIDs).
+
+All tests were performed on the same DigitalOcean droplet as in the previous experiment, namely one with 2 vCPUs and 4GB of RAM. This time, Node version ... was used. The experiments measured the amount of tokens generated or verified per second. For every measurement, this was repeated 100 times. In the case of \gls{DPoP}, a distinction was also made between which cryptographic algorithm was used. Since the  \textit{solid-access-token-verifier} library supports both ES256 (ECDSA with SHA256 as hash function) and PS256 (RSASSA-PSS with SHA256)\footnote{Other hashing algorithms from the SHA-family (using 384 or 512 bits) are also supported, but these are not tested}, separate tests are run for both of these algorithms.
+
+As such, the following throughputs are measured (100 times):
+\begin{multicols}{2}
+\begin{enumerate}
+    \item Generation of macaroons
+    \item Generation of \gls{DPoP} with ES256
+    \item Generation of \gls{DPoP} with PS256
+    \item Verification of macaroons
+    \item Verification of \gls{DPoP} with ES256
+    \item Verification of \gls{DPoP} with PS256
+\end{enumerate}
+\end{multicols}
+
+\noindent In order to make a fair comparison, the following properties are embedded and validated in all cases:
+\begin{enumerate}
+    \item Valid token (i.e. signature check)
+    \item Token not expired
+    \item Correct HTTP method used (i.e. the \texttt{htm} claim in \gls{DPoP} tokens)
+    \item Correct target (i.e. the \texttt{htu} claim in \gls{DPoP} tokens)
+\end{enumerate}
+
+\subsubsection{Results}
+\input{tables/results-exp2}
+\input{images/evaluation/boxplot-exp2}
+
+\subsubsection{Discussion}
+These experiments demonstrate that macaroons are a much more efficient type of access token, both when it comes to generation as well as verification. Furthermore, the experiments illustrate that the choice of cryptographic algorithm depends strongly on whether the generating or verifying device is more resource-constrained. When we assume that the generating device is more resource-constrained (as we did in the use cases, e.g. when it is an IoT device), ES256 seems to be the algorithm that is best suited. However, \gls{DPoP} with ES256 is still about 7.4 times slower than macaroons. This result validates our assumption that macaroons are a much more efficient access token type. When we compare these two token types for verification, macaroons are even more than 11 times faster. Looking at the resource usage graphs provided by DigitalOcean, the CPU seems to be the bottleneck (results are not stored).
+
+\subsection{Experiment 3: Improvement in interaction amount necessary for access token delegation}
+\label{sec:interactions-access-token-delegation}
+In this experiment, we look at how macaroons theoretically perform in the context of their decentralized token delegation. This is done by taking a look at how many interactions are necessary to delegate an access token. We consider a token endpoint $\tau$, a service $\alpha$ and a service $\beta$. In both scenarios, $\alpha$ wants to delegate the token it received from $\tau$ to $\beta$.
+
+\subsubsection{Calculation}
+Let $\delta$ be the cost of an interaction (which includes, a.o., the cost of the network) between $\alpha$ and $\tau$, and $\eta$ the cost of an interaction between $\alpha$ and $\beta$. Finally, we also assume that the generation of a new token has a certain cost $\pi$ associated with it. For a \gls{DPoP} token we let this cost be $\pi_1$, for a macaroon this cost is assumed to be $\pi_2$. Based on the results of experiment 2, we can estimate the relation between $\pi_1$ and $\pi_2$.\\
+
+\noindent\textbf{DPoP delegation} In the case of token delegation with \gls{DPoP} tokens, we become the following cost $c_{t1}$:
+\begin{multicols}{2}
+\begin{enumerate}
+    \item $\alpha$ requests token from $\tau$ ($c = \delta$)
+    \item $\tau$ generates \gls{DPoP} token ($c = \pi_1$)
+    \item $\tau$ replies with token ($c = \delta$)
+    \item $\alpha$ requests second (to-delegate) token from $\tau$ ($c = \delta$)
+    \item $\tau$ generates second \gls{DPoP} token ($c = \pi_1$)
+    \item $\tau$ replies with token ($c = \delta$)
+    \item $\alpha$ requests a resource from $\beta$, includes the second token ($c = \eta$)
+    \item $\beta$ replies with the resource ($c = \eta$)
+\end{enumerate}
+\end{multicols}
+\noindent This comes to a total cost $c_{t1}$ of $4\delta + 2\pi_1 + 2\eta$.\\
+
+\noindent\textbf{Macaroons delegation} In the case of token delegation with macaroons, we become the following cost $c_{t2}$:
+\begin{multicols}{2}
+\begin{enumerate}
+    \item $\alpha$ requests token from $\tau$ ($c = \delta$)
+    \item $\tau$ generates macaroon ($c = \pi_2$)
+    \item $\tau$ replies with token ($c = \delta$)
+    \item $\alpha$ generates derived token ($c = \pi_2$)
+    \item $\alpha$ requests a resource from $\beta$, includes the second macaroon ($c = \eta$)
+    \item $\beta$ replies with the resource ($c = \eta$)
+\end{enumerate}
+\end{multicols}
+\noindent This comes to a total cost $c_{t2} = \sum c = 2\delta + 2\pi_1 + 2\eta$, which makes a difference of $\Delta_c = c_{t1} - c_{t2} = 2(\delta + (\pi_2 - \pi_1))$ between the two types of access tokens.
+
+\subsubsection{Discussion}
+The above calculation has demonstrated that there are gains as long as the condition $\pi_2 - \pi_1 > -\delta$ is fulfilled. However, experiment 2 has demonstrated that $\pi_2 > \pi_1$ (by a factor of $\sim 7$). We can thus confidently conclude that there are also theoretical gains in the number of interactions necessary to perform token delegation. These improvements are most prevalent when the cost $\delta$ of a connection between a service $\alpha$ and a token endpoint $\tau$ are large. This can be the case, for example, when a token endpoint is under heavy load, or when it is located far from the service.
 
 
 \section{Validation of use cases}
+This section describes whether the proposed solution fits all the criteria laid out by the use cases described in section \ref{sec:usecases}.
+
 \subsection{Exercise data}
+The exercise data use case described a scenario wherein a user, who stores her exercise reports in her pod, wanted to export some of this data to form a scoreboard with her friends. By leveraging privacy filters, the heart rate of her activity data can be filtered out so she can safely share her data with an aggregator. Embedding the correct privacy level in the issued macaroon, which functions as an API key, ensures that incorrect settings cannot lead to leaking this data. Furthermore, the data necessary for constructing this overview can be stored in a group vault, such that all users have easy access to it. This can be realized with the use of macaroons as a token mechanism. 
+
 \subsection{Personal finance}
+In the personal finance use case, then, a user wanted to get a general overview of his spending without revealing the exact details such as exact amounts, store locations, IBAN number, etc. This can be realized using privacy filters as well: timestamps and amounts can be changed with the \textit{perturbation} tactic. The IBAN number can be replaced with a pseudonym. Finally, also the store names can be changed while still keeping the correct category, albeit using a strategy that is a bit more complicated. Individual stores can be given a pseudonym (e.g. replacing "Carrefour" with "Grocery store") by using the \textit{pseudonym} tactic combined with the \textit{equalsCondition} field (which only applies the tactic if the condition specified is fulfilled). Since this spending data can be really massive, decentralized delegation allows spreading the load over different worker nodes without overloading the token endpoints.
+
 \subsection{Aggregated view on personal health data streams}
+The final use case was based on a challenge in the context of SolidLab, and pertains to a dashboard that highlights aggregated personal health data, such as in the context of caretakers for elderly people. The SolidLab challenge listed a number of requirements, some of which have been fulfilled. However, the main purpose of this use case was external validation, and not complying with all criteria. 
+The proposed solution lacks in streaming capabilities (out-of-the-box), but these are also out of scope as that is the responsibility of the respective Solid server. 
+However, \middleware{} seems to be an acceptable proof-of-concept for the other criteria if a small number of modifications are added. Right now, the requested resource is re-parsed every time an update happens. It could be possible to keep track of which part of the resource is already transformed, and then only perform transformations on the updated part. This does not come with any problems as the transformations happen on a record-by-record basis and are stateless. Given this small modification, \middleware{} allows efficient updates of the aggregation; since on the Solid server only a part of a resource needs to be parsed, and a lot of unnecessary data can already be stripped away before it reaches the aggregator. 
+Regarding the last criteria, stopping personal information from leaking to the aggregator, this requirement can also be fulfilled given that the privacy filters have been correctly set up. Then, all \gls{PII} can be stripped away before being transmitted.
+
+\section{Evaluation of requirements}
 
 \section{Conclusion of evaluation}
+The evaluation has demonstrated that a number of limitations are present in the proposed solution, mainly regarding the performance of privacy filters. It has, however, also demonstrated that it is a feasible solution for smaller resources and mechanisms exist to improve this. Furthermore, it has also highlighted that macaroons as a novel access token in Solid provide large performance benefits, along with a number of other advantages. Of course, this evaluation only considered the technical aspects of the solution. Privacy filters may provide a technical solution to restricting data leakage to untrusted applications, but it does not solve the problem of how to determine which applications can be trusted. For solving such a complex challenge, a lot of additional research will be necessary. 

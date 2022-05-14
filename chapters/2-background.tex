@@ -33,7 +33,7 @@ This does not completely solve the problem, however. It is possible that multipl
 
 \mint{cucumber}|@prefix foaf <http://xlmns.com/foaf/0.1/>|
 
-\noindent You can then use \mintinline{cucumber}|foaf| in the rest of your turtle file, instead of\\ \mintinline{cucumber}|<http://xlmns.com/foaf/0.1/>|. This makes it very human-readable compared to other formats. Additional existing formats are \gls{RDF}/XML and N-Triples, but they are less common.
+\noindent You can then use \mintinline{cucumber}|foaf| in the rest of your Turtle file, instead of\\ \mintinline{cucumber}|<http://xlmns.com/foaf/0.1/>|. This makes it very human-readable compared to other formats. Additional existing formats are \gls{RDF}/XML and N-Triples, but they are less common.
 
 \subsection{The Solid Protocol}
 \begin{quote}{\href{https://solidproject.org}{solidproject.org}}
@@ -49,7 +49,7 @@ In Solid, there are two types of resources: linked and non-linked data resources
  \gls{RDF} specifications by using a content representation such as Turtle. These linked-data standards follow the principles of the Semantic Web.
 
 \subsection{Authentication}
-Needless to say, some of the data stored in a user's pod should be protected; such that not every agent on the web can read it. To achieve this goal, Solid needs an authentication mechanism. Formally, authenticating a user is defined as the act of verifying a user's claimed identity.\todo{cite ref (comes from Solid)} As such, two components are needed: a way to form identities, and a way to verify that a user possesses an identity.
+Needless to say, some of the data stored in a user's pod should be protected, such that not every agent on the web can read it. To achieve this goal, Solid needs an authentication mechanism. Formally, authenticating a user is defined as the act of verifying a user's claimed identity.\todo{cite ref (comes from Solid)} As such, two components are needed: a way to form identities, and a way to verify that a user possesses an identity.
 
 \subsubsection{Identities}
 Identities in solid (both for users and other agents) follow the WebID standard \citep{webid}, where URIs act as universal identifiers. An example WebID is:
@@ -70,11 +70,11 @@ Identities in solid (both for users and other agents) follow the WebID standard 
 <>
     a foaf:PersonalProfileDocument;
     foaf:maker <http://localhost:3002/jesse/profile/card#me>;
-    foaf:primaryTopic <http://localhost:3002/jesse/profile/card#me>.
+    foaf:primaryTopic <http://localhost/jesse/profile/card#me>.
 
 <http://localhost:3002/jesse/profile/card#me>
     
-    solid:oidcIssuer <http://localhost:3002/>;
+    solid:oidcIssuer <http://localhost/>;
     a foaf:Person.
 \end{minted}
 \caption{Example WebID profile document}
@@ -113,7 +113,7 @@ While the WebID standard provides identities, it does not yet verify them. The a
 \label{sec:solid-oidc}
 While the previous section gave a high level overview of the authentication from a user's point of view, this section takes a look at the technical details of Solid's version of OpenID Connect. The protocol makes use of the \acrshort{PKCE} specification \citep{pkce}, and is based on OpenID Connect and OAuth2.
 
-In Solid, the authentication server (called the \gls{OP}) can differ from the server that offers the resources (called the Resource Server (RS)).  When the user enters the URI of his WebID document, the application can fetch the user's WebID Profile and read it (see figure \ref{listing:webid-profile}). The application can then determine the URL of the \acrfull{OP} (located under \texttt{solid:oidcIssuer}) and retrieve the configuration of the \gls{OP}. This is referenced by a fixed location, \texttt{.well-known/openid-configuration}. 
+In Solid, the authentication server (called the \gls{OP}) can differ from the server that offers the resources (called the Resource Server).  When the user enters the URI of his WebID document, the application can fetch the user's WebID Profile and read it (see figure \ref{listing:webid-profile}). The application can then determine the URL of the \acrfull{OP} (located under \texttt{solid:oidcIssuer}) and retrieve the configuration of the \gls{OP}. This is referenced by a fixed location, \texttt{.well-known/openid-configuration}. 
 In the next step, the client makes an authorization request. This authorization request contains a code challenge and a code verifier (as defined in the \acrshort{PKCE} specification). The verifier is created by generating a cryptographically random string, and the code challenge is created by applying an algorithm such as SHA256 to the code verifier. The verifier is then stored by the application. The code challenge, on the other hand, is not stored but forwarded to the \gls{OP} in an authorization request. 
 
 In Solid, every agent has a WebID, and so too does the application. When the \gls{OP} receives the authorization request, it fetches the client's WebID. The authorization request contains a redirect URL, and the \gls{OP} makes sure that the redirect URL is also listed in the client's WebID, to prevent malicious redirects. The user then logs in at the \gls{OP}, after which it generates a code which is sent back using the redirect URL. Finally, the client then generates a \gls{DPoP} client key pair and header (see next section). This key pair consists of a public and private key, where the private key is used to sign a \gls{JWT} \citep{JWT}.
@@ -132,27 +132,27 @@ All the steps for performing an authentication request have then been fulfilled,
 \noindent The fields in this body provide a number of protections. The \texttt{htu} field limits the token to usage on a single resource. This prevents malicious pods from using the token to relay it to another pod and fetch another resource (essentially, a protection against man-in-the-middle attacks). The \texttt{iat} field contains a unix timestamp of when the token was generated. Finally, the \texttt{jti} field contains an identifier for the token, used to prevent replay attacks.
 
 \subsection{Authorization}
-Authorization within the Solid project builds on the Web Access Control standard \citep{wac}. The WAC standard provides a method to define authorization conditions for resources in a Pod using an \gls{ACL}. Every resource is coupled with an \gls{ACL} resource - either directly, or by inheriting it from a parent container. These \gls{ACL} resources are using the ACL ontology, usually in a turtle file\footnote{Other \gls{RDF} representations are also allowed, but support for turtle files is mandatory}. Authorization conditions consist of three elements: access objects (the associated resource), access modes (\textit{read}, \textit{write}, \textit{append} or \textit{control}) and access subjects (the agents performing the request).
+Authorization within the Solid project builds on the Web Access Control (WAC) standard \citep{wac}. The WAC standard provides a method to define authorization conditions for resources in a Pod using an \gls{ACL}. Every resource is coupled with an \gls{ACL} resource - either directly, or by inheriting it from a parent container. These \gls{ACL} resources are using the \gls{ACL} ontology, usually in a turtle file\footnote{Other \gls{RDF} representations are also allowed, but support for turtle files is mandatory}. Authorization conditions consist of three elements: access objects (the associated resource), access modes (\textit{read}, \textit{write}, \textit{append} or \textit{control}) and access subjects (the agents performing the request).
 
-The access objects in an \gls{ACL} resource are the resources the \gls{ACL} resource refers to. This can be both a normal resource (LDP-RS or LDP-NR, see \ref{subsec:ldp}) as well as a container. It is not mandatory for resources to have an associated ACL resource, as these can be inherited. This mechanism ensures that there is no need to create duplicate ACL resources for similar resources, as well as ensuring proper protection for newly created resources. When a resource is accessed, the server will first look for a directly associated \gls{ACL} resource. When none is found, the server will walk up the container tree (starting from the current container the resource is located in, then the parents, up until the root container). Once an \gls{ACL} resource applying to one of the parent containers is found, this is applied to the requested resource.
+The access objects in an \gls{ACL} resource are the resources the \gls{ACL} resource refers to. This can be both a normal resource (LDP-RS or LDP-NR, see \ref{subsec:ldp}) as well as a container. It is not mandatory for resources to have an associated \gls{ACL} resource, as these can be inherited. This mechanism ensures that there is no need to create duplicate \gls{ACL} resources for similar resources, as well as ensuring proper protection for newly created resources. When a resource is accessed, the server will first look for a directly associated \gls{ACL} resource. When none is found, the server will walk up the container tree (starting from the current container the resource is located in, then the parents, up until the root container). Once an \gls{ACL} resource applying to one of the parent containers is found, this is applied to the requested resource.
 
-Possible access modes, then, are either \textit{read}, \textit{write}, \textit{append} or \textit{control}. Reading and writing are the usual operations. Append is a subset of writing: data can be added to the resource, but not deleted. This is useful for, for example, logging applications, ensuring that logs cannot be removed. Since appending is a subset of writing, the writing authorization implies the appending authorization (no resource can allow writing but disallow appending). Finally, control means being able to modify the ACL of the resource and generally implies ownership of the resource.
+Possible access modes, then, are either \textit{read}, \textit{write}, \textit{append} or \textit{control}. Reading and writing are the usual operations. Append is a subset of writing: data can be added to the resource, but not deleted. This is useful for, for example, logging applications, ensuring that logs cannot be removed. Since appending is a subset of writing, the writing authorization implies the appending authorization (no resource can allow writing but disallow appending). Finally, control means being able to modify the \gls{ACL} of the resource and generally implies ownership of the resource.
 
 Lastly, access subjects are those agents who request a certain operation on the resource. Generally, these can be divided into four categories. The first one is \textit{every agent}, i.e., the resource is publicly accessible. A second option is authenticated agents only (with no restrictions on who these agents are), which may be useful for auditing purposes. Thirdly, resource access can be restricted to agents with a specific WebID. Finally, this can also be extended to groups of agents (where the group has a single WebID). An example \gls{ACL} resource, taken from the \acrlong{CSS}\footnote{See \url{https://github.com/solid/community-server}}, is presented below:
 
 {\captionsetup{aboveskip=-0.2\normalbaselineskip}{
 \begin{code}
 \inputminted[linenos,tabsize=2,breaklines]{cucumber}{code/acl.ttl}
-\caption{Example ACL Resource}
+\caption{Example \acrshort{ACL} Resource}
 \end{code}}}
 
 \subsection{Linked Data Platform and Containers}
 \label{subsec:ldp}
 Solid mainly relies on the \gls{LDP} protocol \citep{ldp} for resource management. The \gls{LDP} protocol uses HTTP for accessing and modifying resources on a server. LDP Resources, or LDPRs, are HTTP resources that conform to a number of conventions. There are multiple types of resources:
 \begin{enumerate}
-    \item \gls{RDF} Sources, also called LDP-RSs (LDP \gls{RDF} Source)
+    \item \gls{RDF} Sources, also called LDP-RSs (\gls{LDP} \gls{RDF} Source)
     \item Non-\gls{RDF} Sources, such as images or binary data, which are called LDP-NRs
-    \item Containers, a concept for bundling related resources together. These are also called LDPCs (LDP Container). 
+    \item Containers, a concept for bundling related resources together. These are also called LDPCs (\gls{LDP} Container). 
 \end{enumerate}
 
 \noindent To support the access and modification of these resources, \gls{LDP} servers must support a number of HTTP methods on the resources. The \texttt{GET} method is mandatory and returns the requested resource, if certain conditions are met (e.g., does the agent have the correct authorizations to access the resource). The \texttt{POST} and \texttt{PUT} methods are optional, and allow agents to create new resources or modify existing ones. Similarly, the \texttt{DELETE} method is optional and allows agents to delete resources. The \texttt{HEAD} and \texttt{OPTIONS} methods are mandatory to be implemented by servers and are similar to the methods defined in the HTTP/1.1 protocol. Below is an example of a request for a basic container and the accompanying reply \citep[from][]{ldp-primer}:
@@ -182,9 +182,7 @@ ETag: W/'123456789'
 \end{figure}
 
 \newpage
-\begin{formal}
-\textbf{Optional reading} $ - $
-\textit{LDP Containers}\\
+\begin{tcolorbox}[title={LDP Containers \hspace*{\fill}(optional reading)},enhanced,frame style image=images/gradient.png,parbox=false,breakable]
 
 \noindent LDP Containers are a specialization of a LDP \gls{RDF} Source, which represent a set of links to other LDPRs that are contained within the container. There are multiple types of LDPCs. The simplest one is the Basic Container or LDP-BC. It defines a basic notion of containment using a generic vocabulary and a \texttt{ldp:contains} relationship. In LDP-BCs, there are no restrictions on LDPRs contained within. The figure below illustrates a LDP Basic Container.\\
 \phantom{kkkkkkkkk||||||}{\includegraphics[width=0.60\textwidth]{images/background/ldp-bc.png}}\\
@@ -192,7 +190,7 @@ ETag: W/'123456789'
 \phantom{kkk|||}{\includegraphics[width=0.9\textwidth]{images/background/ldp-dc.png}}\\
 
 \noindent \textit{Source}: \url{https://www.w3.org/TR/ldp-primer/}
-\end{formal}
+\end{tcolorbox}
 
 \newpage
 
@@ -253,7 +251,7 @@ Since the final signature is visible, macaroons can be further attenuated by the
 \setlength{\abovedisplayskip}{7pt}
 \setlength{\belowdisplayskip}{7pt}
 
-Third-party caveats are more difficult to implement. As explained in the previous section, third-party caveats are caveats that must be \textit{discharged} by a third-party server. This is realised using \textit{holder-of-key proofs}. In order to fulfill a third-party caveat, a service must also include a discharge macaroons that acts as a proof that the caveat is fulfilled. As these discharge macaroons are also macaroons, they also have a key identifier. However, in the case of discharge macaroons, this key identifier's purpose is not only to encode which root key was used - it also embeds the predicate that must be verified by the third party.
+\noindent Third-party caveats are more difficult to implement. As explained in the previous section, third-party caveats are caveats that must be \textit{discharged} by a third-party server. This is realised using \textit{holder-of-key proofs}. In order to fulfill a third-party caveat, a service must also include a discharge macaroons that acts as a proof that the caveat is fulfilled. As these discharge macaroons are also macaroons, they also have a key identifier. However, in the case of discharge macaroons, this key identifier's purpose is not only to encode which root key was used - it also embeds the predicate that must be verified by the third party.
 
 The way this is realised is by having the first-party server create a new root key for the discharge macaroon. This root key is encrypted with the third-party server's public key. When the requesting application receives the encrypted root key, it can pass it on to the third party server, which generates a new discharge macaroon by decrypting the root key and verifying the embedded requirements. The third-party caveat in the original macaroon contains a key identifier pointing to this root key, as well as the location of the third party server and an encrypted copy of the root key. This copy is encrypted with the current signature of the macaroon, so that it can be decrypted when the macaroon is being validated.
 This is illustrated graphically in figure \ref{fig:macaroon-third-party-caveats}.

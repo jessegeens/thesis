@@ -1,0 +1,39 @@
+\begin{table}[H]
+\begin{subtable}{1.0\textwidth}
+\centering
+\begin{tabular}{llll}
+\textbf{Access token type} & \textbf{Macaroon} & \textbf{DPoP (ES256)} & \textbf{DPoP (PS256)} \\ \hline
+Average througput          & 11 633,26          & 1 567,48               & 412,3                 \\
+Max througput              & 14 105             & 1 985                  & 501                   \\
+Min throughput             & 7 461              & 1 045                  & 263                   \\
+Std. dev                   & 1 479,69           & 179,88                & 54,18                 \\
+5th percentile            & 8 916         & 1262            & 311                 \\
+Upper quartile             & 12 594,75          & 1 677,25               & 451,75                \\
+Lower quartile             & 10 640             & 1 461,25               & 385,5                
+\end{tabular}
+\caption{Token generation throughput}
+\label{table:token-gen-throughput}
+\end{subtable}
+
+\vspace*{0.5 cm}
+
+\begin{subtable}{1.0\textwidth}
+\centering
+\begin{tabular}{llll}
+\textbf{Access token type} & \textbf{Macaroon} & \textbf{DPoP (ES256)} & \textbf{DPoP (PS256)} \\ \hline
+Average througput          & 14 539,32          & 1 244,14               & 2 094,58               \\
+Max througput              & 17 410             & 1513                  & 2 921                  \\
+Min throughput             & 9 596              & 878                   & 1 305                  \\
+Std. dev                   & 1 895,16           & 151,05                & 369,15                \\
+5th percentile            & 11 138          & 934                  & 1 493                \\
+Upper quartile             & 15 986             & 1 347,75               & 2 390,5                \\
+Lower quartile             & 13 540,5           & 1 164,75               & 1 797                 
+\end{tabular}
+\caption{Token verification throughput}
+\label{table:token-ver-throughput}
+\end{subtable}
+
+\caption{Overview of token generation and verification throughput in tokens/second}
+\label{table:token-througput}
+
+\end{table}

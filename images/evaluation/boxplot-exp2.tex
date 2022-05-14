@@ -1,0 +1,129 @@
+\pgfplotsset{
+    legend image code/.code={
+        \draw [#1] (0cm,-0.1cm) rectangle (0.3cm,0.1cm);
+    },
+}
+
+% 11918,5	1579,5	417,5
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \begin{tikzpicture}
+      \begin{axis}
+        [
+        %width=.8\textwidth,
+        ytick={0, 250, 500, 1000, 2000, 4000, 8000, 16000},
+        /pgf/number format/.cd,
+        use comma,
+        1000 sep={\,},
+        scaled y ticks = false,
+        %yticklabels={0, 3000, 6000, 9000, 12000},
+        ymode=log,
+        log ticks with fixed point,
+        boxplot/draw direction=y,
+        boxplot={
+            box extend=0.23,
+        },
+        x=1.8cm,
+        xtick={1, 2, 3},
+        xticklabels=\empty,
+        cycle list={{black,fill=orange},{black,fill=teal},{black,fill=olive}},
+        legend pos=north east,
+        legend entries = {Macaroons, DPoP (ES256), DPoP (PS256)},
+        name = border
+        ]
+        \addplot+[
+        boxplot prepared={
+          median=11918.5,
+          upper quartile=12594.75,
+          lower quartile=10640,
+          upper whisker=14105,
+          lower whisker=8916
+        },
+        ] coordinates {};
+        \addplot+[
+        boxplot prepared={
+          median=1579.5,
+          upper quartile=1677.25,
+          lower quartile=1461.25,
+          upper whisker=1985,
+          lower whisker=1262
+        },
+        ] coordinates {};
+        \addplot+[
+        boxplot prepared={
+          median=417.5,
+          upper quartile=451.75,
+          lower quartile=385.5,
+          upper whisker=501,
+          lower whisker=311
+        },
+        ] coordinates {};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Boxplot of token generation throughput}.
+    \label{fig:boxplot-token-generation}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+      \begin{tikzpicture}
+      \begin{axis}
+        [
+        %width=.8\textwidth,
+        ytick={0, 250, 500, 1000, 2000, 4000, 8000, 16000},
+        %yticklabels={0, 3000, 6000, 9000, 12000},
+        /pgf/number format/.cd,
+        use comma,
+        1000 sep={\,},
+        scaled y ticks = false,
+        ymode=log,
+        log ticks with fixed point,
+        boxplot/draw direction=y,
+        boxplot={
+            box extend=0.23,
+        },
+        x=1.8cm,
+        xtick={1, 2, 3},
+        xticklabels=\empty,
+        cycle list={{black,fill=orange},{black,fill=teal},{black,fill=olive}},
+        legend pos=north east,
+        legend entries = {Macaroons, DPoP (ES256), DPoP (PS256)},
+        name = border
+        ]
+        \addplot+[
+        boxplot prepared={
+          median=14955,
+          upper quartile=15986,
+          lower quartile=13540.5,
+          upper whisker=17410,
+          lower whisker=11138
+        },
+        ] coordinates {};
+        \addplot+[
+        boxplot prepared={
+          median=1270.5,
+          upper quartile=1347.75,
+          lower quartile=1164.75,
+          upper whisker=1513,
+          lower whisker=934
+        },
+        ] coordinates {};
+        \addplot+[
+        boxplot prepared={
+          median=2108.5,
+          upper quartile=2390.5,
+          lower quartile=1797,
+          upper whisker=2921,
+          lower whisker=1493
+        },
+        ] coordinates {};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Boxplot of token verification throughput}.
+    \label{fig:boxplot-token-verification}
+\end{subfigure}
+\caption{Boxplots of token throughput, Y-axes are logarithmic, min values are $5^{\text{th}}$ percentile}.
+\label{fig:token-throughput}
+\end{figure}

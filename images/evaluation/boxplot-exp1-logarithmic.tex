@@ -1,0 +1,208 @@
+\pgfplotsset{
+    legend image code/.code={
+        \draw [#1] (0cm,-0.1cm) rectangle (0.3cm,0.1cm);
+    },
+}
+
+\begin{figure}
+\centering
+  \begin{tikzpicture}
+      \begin{axis}
+        [
+        %width=.8\textwidth,
+        %ytick={0, 300, 600, 900, 1200, 1500},
+        %yticklabels={0, 300, 600, 900, 1200, 1500},
+        boxplot/draw direction=y,
+        boxplot={
+            draw position={1/3 + floor(\plotnumofactualtype/4) + 1/6*mod(\plotnumofactualtype,4)},
+            box extend=0.15,
+        },
+        /pgf/number format/.cd,
+        use comma,
+        1000 sep={\,},
+        scaled y ticks = false,
+        ymode=log,
+        log ticks with fixed point,
+        x=2.6cm,
+        xtick={0,1,2,...,10},
+        x tick label as interval,
+        xticklabels={%
+            {10},%
+            {100},%
+            {1000},%
+            {10000},%
+        },
+        x tick label style={
+            text width=2.5cm,
+            align=center
+        },
+        cycle list={{black,fill=orange},{black,fill=teal},{black,fill=olive},{black,fill=violet}},
+        legend pos=north west,
+        legend entries = {Unmodified (JSON), Unmodified (XML), Modified (JSON), Modified (XML)},
+        name = border
+        ]
+        % JSON unmodified (10)
+        \addplot+[
+        boxplot prepared={
+          median=130,
+          upper quartile=147.25,
+          lower quartile=97.75,
+          upper whisker=277.3,
+          lower whisker=83
+        },
+        ] coordinates {};
+        % XML unmodified (10)
+        \addplot+[
+        boxplot prepared={
+          median=132,
+          upper quartile=169.75,
+          lower quartile=99.75,
+          upper whisker=401.9,
+          lower whisker=77
+        },
+        ] coordinates {};
+        % JSON modified (10)
+        \addplot+[
+        boxplot prepared={
+          median=156.5,
+          upper quartile=238.25,
+          lower quartile=144,
+          upper whisker=353.45,
+          lower whisker=125
+        },
+        ] coordinates {};
+        % XML modified (10)
+        \addplot+[
+        boxplot prepared={
+          median=149.5,
+          upper quartile=239.25,
+          lower quartile=136,
+          upper whisker=427.6,
+          lower whisker=119
+        },
+        ] coordinates {};
+        % JSON unmodified (100)
+        \addplot+[
+        boxplot prepared={
+          median=171.5,
+          upper quartile=236.75,
+          lower quartile=130,
+          upper whisker=314.55,
+          lower whisker=99
+        },
+        ] coordinates {};
+        % XML unmodified (100)
+        \addplot+[
+        boxplot prepared={
+          median=167,
+          upper quartile=238.75,
+          lower quartile=133.75,
+          upper whisker=394.6,
+          lower whisker=100
+        },
+        ] coordinates {};
+        % JSON modified (100)
+        \addplot+[
+        boxplot prepared={
+          median=302,
+          upper quartile=385.5,
+          lower quartile=245.75,
+          upper whisker=533.75,
+          lower whisker=161
+        },
+        ] coordinates {};
+        % XML modified (100)
+        \addplot+[
+        boxplot prepared={
+          median=304,
+          upper quartile=414.5,
+          lower quartile=239.75,
+          upper whisker=593.2,
+          lower whisker=182
+        },
+        ] coordinates {};
+        % JSON unmodified (1000)
+        \addplot+[
+        boxplot prepared={
+          median=290,
+          upper quartile=370.75,
+          lower quartile=226.75,
+          upper whisker=448.5,
+          lower whisker=176
+        },
+        ] coordinates {};
+         % XML unmodified (1000)
+        \addplot+[
+        boxplot prepared={
+          median=319,
+          upper quartile=392.25,
+          lower quartile=279.5,
+          upper whisker=581.95,
+          lower whisker=210
+        },
+        ] coordinates {};
+        % JSON modified (1000)
+        \addplot+[
+        boxplot prepared={
+          median=524,
+          upper quartile=566.25,
+          lower quartile=470.25,
+          upper whisker=770.1,
+          lower whisker=368
+        },
+        ] coordinates {};
+        % XML modified (1000)
+        \addplot+[
+        boxplot prepared={
+          median=880,
+          upper quartile=993.75,
+          lower quartile=834.5,
+          upper whisker=1191.15,
+          lower whisker=702
+        },
+        ] coordinates {};
+         % JSON unmodified (10000)
+        \addplot+[
+        boxplot prepared={
+          median=990,
+          upper quartile=1095.25,
+          lower quartile=928.75,
+          upper whisker=1423.55,
+          lower whisker=782
+        },
+        ] coordinates {};
+         % XML unmodified (10000)
+        \addplot+[
+        boxplot prepared={
+          median=1536.5,
+          upper quartile=1675.25,
+          lower quartile=1429.75,
+          upper whisker=2203.2,
+          lower whisker=1173
+        },
+        ] coordinates {};
+        % JSON modified (10000)
+        \addplot+[
+        boxplot prepared={
+          median=6563,
+          upper quartile=6838.5,
+          lower quartile=6186,
+          upper whisker=7641.4,
+          lower whisker=5293
+        },
+        ] coordinates {};
+        % XML modified (10000)
+        \addplot+[
+        boxplot prepared={
+          median=9094,
+          upper quartile=9597.25,
+          lower quartile=8819,
+          upper whisker=10347.15,
+          lower whisker=8028
+        },
+        ] coordinates {};
+      \end{axis}
+    \end{tikzpicture}
+\caption{Boxplot of data request durations (y-axis, in ms, logarithmic) across variable attribute amounts (x-axis). Max values are $95^{\text{th}}$ percentile}.
+\label{fig:request-durations-log}
+\end{figure}

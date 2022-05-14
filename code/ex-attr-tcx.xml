@@ -1,0 +1,12 @@
+<TrackPoint>
+    <Time>2020-08-16T00:59:27.969Z</Time>
+    <Position>
+    <LatitudeDegrees>40.7780135</LatitudeDegrees>
+    <LongitudeDegrees>-73.9656795</LongitudeDegrees>
+    </Position>
+    <DistanceMeters>4671.900000000001</DistanceMeters>
+    <HeartRateBpm xsi:type="HeartRateInBeatsPerMinute_t">
+    <Value>153</Value>
+    </HeartRateBpm>
+    <SensorState>Absent</SensorState>
+</TrackPoint>

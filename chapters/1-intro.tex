@@ -3,7 +3,7 @@
 %The first contains a general introduction to the work. The goals are
 %defined and the modus operandi is explained.
 
-\section{Problem Statement: Data Aggregation in the Decentralized Web}
+\section{Problem statement: data aggregation in the decentralized web}
 \label{sec:problem}
 In recent years, the internet has become more and more centralized \citep{internet-report}. This has many negative side effects: powerful companies have control over vast amounts of data, providing new market insights or personalization options, which in turn lead to more market power \citep{big-tech-innovation, platform-monopolies}. Lacking data on such large scales, smaller enterprises do not have access to these capabilities. This stifles competition as it makes it harder for these smaller companies to find a position in the market, limiting innovation. 
 
@@ -11,42 +11,41 @@ Furthermore, the lack of access to personal data has also manifested itself at t
 
 To tackle this problem, the Solid \citep{solid} specification was introduced. Solid is a web specification with the aim of decentralizing the web again. The specification introduces a number of concepts to achieve this. Every user (a person, automated agent, group, ...) is given his own WebID: an identity on the web. Furthermore, WebIDs often also have one or more coupled \textit{pods}. Pods are personal online data vaults, and form a standardized way to store a user's data. This allows the user to re-use the same data across different services, and to fine-tune which applications have access to which data.
 
-Solid is a very recent specification, and as such there remain many open challenges. One of these challenges is secure aggregation of data across pods. Pods often hold very interesting information that, when combined with information from other pods, can lead to very interesting insights for users, companies and other stakeholders. However, it is technically very challenging to aggregate such data from different pods. Many aspects come in to play here: security, authorization, privacy, etc. The aim of this thesis is to come up with possible solutions for secure and protected data aggregation in the Solid ecosystem. Section \ref{sec:usecases} discusses three use cases which illustrate scenarios in which this problem occurs. These will be used to aid the design of the middleware solution.
+Solid is a very recent specification, and as such there remain many open challenges. One of these challenges is secure aggregation of data across pods. Pods often hold very interesting information that, when combined with information from other pods, can lead to very interesting insights for users, companies and other stakeholders. However, it is technically very challenging to aggregate such data from different pods. Many aspects come in to play here: security, authorization, privacy, etc. The aim of this dissertation is to come up with possible solutions for secure and protected data aggregation in the Solid ecosystem. 
+To concisely summarize this section, we formulate the following formal research question.\\
+
+\noindent \textbf{RQ: Can we design a scalable middleware solution aimed at facilitating data aggregation in a secure and protected manner in a setting where data is distributed across various parties?
+}
 
 \section{Motivation}
 \label{sec:motivation}
-The motivation for writing this thesis consists of a number of factors. 
-
-On a personal note, I am very grateful to be able to work on the topic of Solid and privacy-enhancing technologies. I believe that decentralizing the web is a very noble goal and I am very glad to be able to contribute to this. I am also very interested in technologies related to decentralization and privacy, and I am sure that completing this thesis will introduce me in-depth to a number of very important concepts in the field.
-
-From a societal point-of-view, this thesis also has a two-fold motivation. First of all, Solid is a very new technology that is receiving a lot of attention and investments over the last few months, both in the public and private sector. There are deals with the Flemish \citepjournal{solid-flanders} and Swedish \citepjournal{solid-sweden} governments, and Inrupt (MIT's Solid spin-off company) has just received a thirty million dollar Series A investment \citepjournal{inrupt-seriesa}. This will hopefully lead to an influx of developers and users into the ecosystem, which provides many opportunities from a data perspective. These data opportunities offer the most value when combined across pods, which highlights the need for secure data aggregation mechanisms.
+The motivation for writing this dissertation is two-fold. First of all, Solid is a very new technology that is receiving a lot of attention and investments over the last few months, both in the public and private sector. There are deals with the Flemish \citepjournal{solid-flanders} and Swedish \citepjournal{solid-sweden} governments, and Inrupt (MIT's Solid spin-off company) has just received a thirty million dollar Series A investment \citepjournal{inrupt-seriesa}. This will hopefully lead to an influx of developers and users into the ecosystem, which provides many opportunities from a data perspective. These data opportunities offer the most value when combined across pods, which highlights the need for secure data aggregation mechanisms.
 
 On the other hand, especially since the release of the GDPR and some data privacy scandals, there is a big focus on data privacy recently, both from companies and users \citepjournal{mckinsey-privacy}. This research combines both of these reasons to realize a potentially big impact by improving the data privacy and authentication capabilities of the Solid  ecosystem, in the context of data aggregation. 
 
 \section{Contributions}
 \label{sec:contributions}
-This thesis makes the following contributions to the research domain of Solid.
+This dissertation makes the following contributions to the research domain of Solid.
 \begin{enumerate}
     \item An overview of literature in the domain of \acrlong{PETs}, accompanied by a discussion of each technology and its usability within the context of Solid.
     \item Privacy filters, a novel way to limit the information leakage of data exposed through Solid Pods. This mechanism is implemented in a prototype and evaluated.
     \item A mechanism for realizing decentralized delegation of access tokens in Solid, which also enables more efficient generation of tokens and enables tokens with third-party attestations. This mechanism is also accompanied by a prototype and benchmarked.
 \end{enumerate}
 
-\newpage
 \section{Thesis Outline}
 \label{sec:outline}
 This thesis aims to develop possible solutions for realizing a middleware for secure and protected data aggregation in Solid. The next sections of this chapter discuss a number of use cases which illustrate the problem statement and its complexities.
 
 Evidently, no solution can be proposed without first having some background knowledge on the topic. Therefore, chapter \ref{cha:background} introduces some necessary background information. This chapter covers all the topics on which this thesis is built, such as an in-depth explanation of the Solid protocol, as well as an introduction to macaroons, a novel authorization token. 
 
+Chapter \ref{cha:solution-overview} starts by researching what the concrete bottlenecks are and develops some concrete goals for the middleware. This is done by introducing a generic architecture for data aggregation in Solid. Based on this, a relevant attacker model and a number of requirements are proposed. The section then gives an overview of the complete solution, called \middleware{} (Middleware for Aggregation Security and protection in Solid). A general overview of the architecture of the solution is introduced, explaining on a high level the two main components of the \middleware{}.
+
 The first building block necessary for such a middleware system concerns the privacy aspect. Therefore, chapter \ref{cha:analysis} studies a number of widely used \acrlong{PETs} and discusses their relevance in the context of Solid. Some of these \acrshort{PETs} will be used in the developed solution, while devising solutions using the remaining applicable \acrshort{PETs} is considered future work (discussed in chapter \ref{cha:conclusion}).
 
-Chapter \ref{cha:solution-overview} gives an overview of the complete solution, called \middleware{} (Middleware for Aggregation Security and protection in Solid). First, some context on data aggregation is given by introducing a generic architecture for data aggregation in Solid. This aids in highlighting some concrete problems that currently exist. Next, the attacker model and requirements are determined. Following this, a general overview of the architecture of the solution is introduced, explaining on a high level the two main components of the \middleware{}.
-
-Chapter \ref{cha:privacy-filters}, introduces privacy filters, one of the components of the solution, in detail. This component focuses on rewriting requests to render data more private when it is requested by an aggregator or application. The chapter also discusses the concrete implementation of this component.
+Chapter \ref{cha:privacy-filters} then introduces privacy filters, one of the components of the solution, in detail. This component focuses on rewriting requests to render data more private when it is requested by an aggregator or application. The chapter also discusses the concrete implementation of this component. The main findings of section \ref{cha:analysis} will be used to develop this solution.
 
 Having developed a possible solution to the privacy problem, the next challenge is \textit{(decentralized) delegation}. This is discussed in chapter \ref{cha:macaroons-solid}. Aggregators can be quite complex, consisting of multiple workers, and they need long-lived access to the data in a safe manner. Macaroons are studied as a possible remedy, and their advantages and drawbacks are discussed. Combining these technologies, the chapter concludes with a possible architecture in which privacy filters and macaroons are used to build a secure and protected data aggregator.
 
 While these proposed solutions may sound good in theory, real life is often more complicated. Therefore, extensive validation is necessary to prove the value of the proposed solutions. As such, chapter \ref{cha:evaluation} validates and evaluates the results, by discussing theoretical shortcomings, as well as performing some experiments to measure the performance of developed prototypes. 
 
-Finally, chapter \ref{cha:conclusion} summarizes the main findings of this thesis. In addition, possible areas of future work are discussed here, which may hopefully inspire the reader to perform further research in this domain.
+Finally, chapter \ref{cha:conclusion} summarizes the main findings of this dissertation. In addition, possible areas of future work are discussed here, which may hopefully inspire the reader to perform further research in this domain.

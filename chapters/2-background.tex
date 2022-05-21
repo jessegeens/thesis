@@ -1,6 +1,6 @@
 \chapter{Background}
 \label{cha:background}
-This thesis investigates a middleware for realising secure and protected aggregation of data exposed through the Solid protocol. Section \ref{sec:solid} introduces the basic concepts of Solid, while section \ref{sec:macaroons} introduces some necessary background knowledge on macaroons, a novel type of access token.
+This dissertation investigates a middleware for realising secure and protected aggregation of data exposed through the Solid protocol. Section \ref{sec:solid} introduces the basic concepts of Solid, while section \ref{sec:macaroons} introduces some necessary background knowledge on macaroons, a novel type of access token.
 
 \section{Solid}
 \label{sec:solid}
@@ -122,7 +122,7 @@ All the steps for performing an authentication request have then been fulfilled,
 
 \subsubsection{DPoP}
 \label{sec:dpop}
-\acrfull{DPoP} \citep{ietf-oauth-dpop} is a new technology that improves upon bearer tokens (see section \ref{sec:macaroons-intro}) from a security point-of-view, by preventing replay attacks. It utilises a proof-of-possession mechanism where a \gls{DPoP} header token proves that the sender (i.e., the client application) possesses a private key, without revealing this key. It is the main mechanism used for authentication in Solid. In the mechanism, the first step is that the client generates a public-private key pair. To then construct a \gls{DPoP} header token, the client creates a \gls{JWT} and signs it using the generated key. This token includes the public key in its header, and a number of fields in its body:
+\acrfull{DPoP} \citep{ietf-oauth-dpop} is a new technology that improves upon bearer tokens (see section \ref{sec:macaroons-intro}) from a security point-of-view, by preventing replay attacks. It utilises a proof-of-possession mechanism where a \gls{DPoP} header token proves that the sender (i.e., the client application) possesses a private key, without revealing this key. It is the main mechanism used for authentication in Solid. In the mechanism, the first step is that the client generates a public-private key pair. To then construct a \gls{DPoP} header token, the client creates a \gls{JWT} and signs it using the generated key. This token includes the public key in its header, and a number of fields in its body (see listing \ref{listing:dpop}).
 {\captionsetup{aboveskip=-0.2\normalbaselineskip}{
 \begin{listing}[H]
 \inputminted[linenos,tabsize=2,breaklines]{json}{code/dpop-body.json}

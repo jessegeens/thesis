@@ -1,15 +1,15 @@
-\chapter{Macaroons as a Novel Access Token Mechanism in Solid}
+\chapter{Macaroons as a novel access token mechanism in Solid}
 \label{cha:macaroons-solid}
 
 Section \ref{sec:macaroons} gave an introduction to macaroons, a novel kind of access tokens. This chapter discusses ways in which macaroons can mediate the problems stipulated in chapter \ref{cha:solution-overview}. Lower computational cost is realized by macaroons because of its hash-based signatures, instead of using public-key cryptography. Real performance gains of utilising macaroons instead of \gls{DPoP} are explored in section \ref{sec:macaroons-performance}. Using macaroons for realizing group vaults and decentralized delegation is explored in the next sections.
 
-\section{Group Vaults}
+\section{Group vaults}
 \label{sec:group-vaults}
 Group vaults are pods which hold data of multiple users in a single pod. This could be useful in many scenarios, for example a pod which holds data for a family (such as incoming invoices, controlling light switches in the home, etc.). However, realizing secure group vaults poses problems due to the decentralized nature of Solid. Users in a group vault can have identities that are issued by different services. For example, users \textit{Alice}, with WebID \texttt{https://alice.solid.org} (issued by \texttt{solid.org}), and \textit{Bob}, with WebID \texttt{https://bob.pods.org} (issued by \texttt{pods.org}), would like to open a group vault. When a request is made to the group server (for modifying or reading a resource), a token must be included that authenticates Alice or Bob. However, the group vault server is not the server that issued the token. Moreover, the token server that must be contacted for validating the user's identity is dependent on which user makes the request. When the traditional authentication mechanism of Solid is used, this can cause a bottleneck on the token server. 
 
 Macaroons can bring a solution to this problem due to one of its features called \textit{third-party attestation}. In this mechanism, a macaroon can contain a caveat (requirement) that must be attested by a third party. This third party can then generate a \textit{discharge macaroon}, which serves as a proof that the caveat laid out in the original macaroon is fulfilled. In the case of group vaults, these third-party attestations can be used to prove to the group vault server that a user is authenticated by a third-party identity provider. This section explores an architecture for a group vault server which uses macaroons to authenticate its participants.
 
-\subsection{Group Vault Architecture}
+\subsection{Group vault architecture}
 Group vaults are Solid pods that store data for a group of participants. Traditionally, such as for example in the \acrlong{CSS}, the server that hosts the pod (the data) is the same server that acts as the token endpoint for verifying access tokens of the user. In the context of group vaults, the \gls{GVS} does not issue tokens and as such can not verify them. Instead, the \gls{GVS} keeps track of which users belong to the group and holds the data belonging to the group vault.
 
 When a user wishes to access a group resource, it fetches a macaroon from the \gls{GVS}, specifying his WebID and the group from which he would like to access resources. The \gls{GVS} then issues a macaroon, limiting its use to that specific user, and including a caveat that the user is logged in at his identity provider. The user must then contact his own token endpoint and request a discharge macaroon, which serves as proof of his authentication. The user can then request resources from the \gls{GVS} by including his macaroon and its associated discharge macaroon. If many successive requests must be made (for example, fetching the contents of a resource container), the token endpoint of the user must only be contacted once and the discharge macaroon (or one derived from this) can be re-used multiple times. 
@@ -39,11 +39,11 @@ To verify the feasibility of using macaroons as access tokens for realizing effi
     \label{fig:gv-macaroon-example}
 \end{figure}
 
-\section{Decentralized Delegation of Access Tokens}
+\section{Decentralized delegation of access tokens}
 \label{sec:decentralized-delegation}
 A second problem in the context of secure data aggregation is delegation of access tokens. In the case of more complex aggregations, there is often more than one node performing the aggregation. Another possibility is that a component performing data aggregations also needs data from another component or service, which also needs access to the user's pod. 
 
-\subsection{Existing Access Token Delegation Mechanisms}
+\subsection{Existing access token delegation mechanisms}
 Methods for delegating access tokens already exist, even within the OAuth standard. An example is the OAuth On-Behalf-Of flow\footnote{\label{fn:obo}See \url{https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow}}. This flow supports the delegation of an access token of \textit{Service A} to \textit{Service B}, propagating the access token's bound identity and permissions. This concept is called \textit{access token delegation} because Service B acts on Service A's behalf and in its name. 
 
 The On-Behalf-Of flow works as illustrated in figure \ref{fig:obo-flow} (protocol description based on (\ref{fn:obo})). 
@@ -67,7 +67,7 @@ The On-Behalf-Of flow works as illustrated in figure \ref{fig:obo-flow} (protoco
 \noindent Although this method functionally works, it has a number of important limitations in a decentralized environment. The main limitation is that this flow relies heavily on the Token Endpoint to generate new tokens every time an access token needs to be delegated. This creates a bottleneck when such tokens must often be generated, and makes the system more centralized. 
 
 \newpage
-\subsection{Decentralized Delegation of Access Tokens using Macaroons}
+\subsection{Decentralized delegation of access tokens using macaroons}
 Macaroons have a number of interesting properties that make them suitable as an access token for realizing decentralized delegation of access token. Concretely, this decentralized delegation means that a Service A can delegate its access token to Service B, without having to contact the Token Endpoint for obtaining a new token.
 
 Delegation of macaroons works out-of-the-box, because by default macaroons are not bound to a specific client (nor is a proof-of-possession mechanism employed). Such restrictions must be added by adding caveats that restrict the macaroon's usage to a specific application (and a specific user, target resource, etc.). By default, macaroons can also be extended with additional caveats. This enables a service that wishes to delegate its access token to add additional constraints on the token usage (such as making it usable only once, adding a more strict time restriction, etc.).

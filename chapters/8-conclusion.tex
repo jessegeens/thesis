@@ -1,7 +1,14 @@
 \chapter{Conclusion}
 \label{cha:conclusion}
 \section{Overview}
+In this dissertation, a middleware for secure and protected data aggregation in Solid has been presented. The middleware introduces two novel components. Firstly, privacy filters are presented: a mechanism to dynamically rewrite resources based on contextual information from the request, to reduce attribute leakage to untrusted applications. Secondly, this thesis suggests using macaroons as a novel access token mechanism. This enables decentralized delegation of access tokens, comes with serious performance improvements, and allows for a natural way to realize group vaults in a decentralized manner through third-party attestations. Furthermore, a number of \acrlong{PETs} have been analyzed in the context of an aggregation middleware for Solid. This analysis has led to a number of possible future research directions, which are discussed in the next section.
 
+The solution proposed in this dissertation has also been thoroughly evaluated. This evaluation has demonstrated that the requirements that were laid out have, for the most part, been fulfilled. However, there are limitations on the performance of privacy filters for large resources. The evaluation has also demonstrated that macaroons bring a number of performance improvements, both practical in throughput of token generation and verification, as well as theoretically in the interaction cost necessary for delegating access tokens.
+% In this dissertation, we have presented a new way of analyzing a basic building block in
+% computer graphics rendering algorithms—the computational interaction between illumi-
+% nation and the reflective properties of a surface.
+
+%RQ: Can we design a scalable middleware solution aimed at facilitating data aggregation in a secure and protected manner in a setting where data is distributed across various parties?
 
 \section{Future work}
 

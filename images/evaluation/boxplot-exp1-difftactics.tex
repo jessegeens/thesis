@@ -45,11 +45,11 @@
         ] coordinates {};
         \addplot+[
         boxplot prepared={
-          median=19290.5,
-          upper quartile=20937,
-          lower quartile=18030,
-          upper whisker=22816.3,
-          lower whisker=15962
+          median=16220.5,
+          upper quartile=16569,
+          lower quartile=15975.5,
+          upper whisker=17239.35,
+          lower whisker=15513
         },
         ] coordinates {};
          \addplot+[
@@ -63,6 +63,6 @@
         ] coordinates {};
       \end{axis}
     \end{tikzpicture}
-    \caption{Boxplot of request durations (in ms, y-axis) with a different number of transformations performed (x-axis)}.
+    \caption{Boxplot of request durations (in ms, y-axis) with a different number of transformations performed (x-axis). Max values are $95^{\text{th}}$ percentile}.
     \label{fig:boxplot-diff-tactics}
 \end{figure}

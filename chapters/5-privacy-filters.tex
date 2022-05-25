@@ -17,7 +17,7 @@ As illustrated by figure \ref{fig:privacy-utility-tradeoff}, improved privacy al
 \noindent In the developed prototype privacy filters are represented by a JSON document (per data scheme), describing which transformations ought to happen to which data attribute. An example of such a configuration file can be found in the appendix, in listing \ref{listing:privacy-filter-kbc}. Users can then specify how much privacy they want (in general, or for specific data types) in an abstract way. 
 When a request is received, \middleware{} checks what data type it is, which application requested the data and what level of privacy the user has requested. Subsequently, a number of transformations are applied to the data (as specified by the privacy filter configuration file), after which the transformed data is returned to the application. 
 
-An example of what such a rewrite can look like is provided in figure \ref{fig:example-treatment-privacy-filter}. In this example, transformations such as \textit{pseudonym} (on the \texttt{accountOwner}, \texttt{name}, \texttt{IBAN} and \texttt{from}/\texttt{to} fields) and \textit{perturbation} (on the \texttt{saldo} and \texttt{amount} fields) are applied. A complete list of supported transformations is discussed in section \ref{sec:design-decisions}. The next sections discusses how privacy filters were implemented as a part of \middleware{} by giving a detailed description of some important design decisions, followed by an overview of the architecture. Evaluation of the developed prototype is discussed in chapter \ref{cha:evaluation}.
+An example of what such a rewrite can look like is provided in figure \ref{fig:example-treatment-privacy-filter}. In this example, transformations such as \textit{pseudonym} (on the \texttt{accountOwner}, \texttt{name}, \texttt{IBAN} and \texttt{from}/\texttt{to} fields) and \textit{perturbation} (on the \texttt{saldo} and \texttt{amount} fields) are applied. A complete list of supported transformations is discussed in section \ref{sec:design-decisions}. The next section first discusses the earlier introduced concept of privacy levels, which provide granularity in the performed transformations. The subsequent sections then discuss how privacy filters were implemented as a part of \middleware{} by giving a detailed description of some important design decisions, followed by an overview of the architecture. Evaluation of the developed prototype is discussed in chapter \ref{cha:evaluation}.
 
 
 
@@ -31,7 +31,7 @@ Another important aspect is that the developers of privacy filters for specific 
 
 \section{Architecture}
 \label{sec:implementation}
-\middleware{} is implemented as an extension of the \acrlong{CSS}. The complete code and instructions can be found at \url{https://github.com/jessegeens/pepsa-component}.
+\middleware{} is implemented as an extension of the \acrlong{CSS}. The complete code and instructions can be found at \url{https://github.com/jessegeens/pepsa-component}. First, a number of important design decisions are discussed in this section. Afterwards, the concrete implementation of privacy filters as an extension of the \gls{CSS} is reviewed.
 
 \subsection{Design decisions}
 \label{sec:design-decisions}

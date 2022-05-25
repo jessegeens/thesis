@@ -1,6 +1,6 @@
-\chapter{Use cases, requirements and solution overview}
+\chapter{Use cases, requirements and system overview}
 \label{cha:solution-overview}
-This chapter starts by introducing various use cases that illustrate the problem statement. Based on these use cases, a number of requirements are derived, along with an adversary model. Thereafter, a generic architecture for data aggregation in Solid is studied, which is used to research how the problem statement concretely manifests itself. 
+This chapter starts by introducing various use cases that illustrate the problem statement. To illustrate the problems that occur in these use cases more clearly, a generic data aggregation architecture is presented. This architecture will highlight a number of problems that currently exist. Based on this architecture and the use cases, a number of requirements are derived, along with an adversary model.
 
 Subsequently, based on all these requirements, a high-level overview of the solution is given. This solution is developed as a prototype, and is named \middleware{}: Middleware for Aggregation Security and protection in Solid. \middleware{} is thus a middleware for performing secure and protected data aggregation on top of the Solid protocol. 
 
@@ -8,7 +8,7 @@ The next chapters then start by studying a number of \gls{PETs} in order to dete
 
 \section{Use cases: health and finance}
 \label{sec:usecases}
-This section describes a number of use cases which highlight the need for a middleware for secure data aggregation in Solid. These use cases illustrate the complexities and challenges that come with developing such a middleware, and will serve as a guide throughout the development of a solution. The use cases are located in the domains of health and finance, since these come traditionally with sensitive data. Furthermore, data in these domains can also lead to interesting insights, forming ideal candidates for data aggregation.
+This section describes three use cases which highlight the need for a middleware for secure data aggregation in Solid. These use cases illustrate the complexities and challenges that come with developing such a middleware, and will serve as a guide throughout the development of a solution. The use cases are located in the domains of health and finance, since these come traditionally with sensitive data. Furthermore, data in these domains can also lead to interesting insights, forming ideal candidates for data aggregation.
 
 \subsection{Exercise data}
 \label{usecase:ex-data}
@@ -24,9 +24,32 @@ While the previous two use cases illustrate potential problems which call for se
 This use case describes a scenario wherein a caretaker wishes to gain insights on all her patients, without knowing exact patient details. These insights are provided through a dashboard, which shows some key statistics about her patient population. Examples of such statistics are average heart rates, average number of steps taken throughout the day, what percentage of the population woke up before 9 am, etc. Of course, the collection and aggregation of such data does not come without issues. Data is derived from activity trackers and IoT sensors, which regularly update data in the user's pod. A secure aggregator must then collect data from all these pods, combine these into aggregate statistics, and write this to a new pod accessible to the caretaker.
 
 \newpage
+
+\section{A generic data aggregation architecture in Solid}
+\label{sec:generic-agg-arch}
+A middleware for aggregation in Solid will consist of a number of components, each with their own responsibility. Figure \ref{fig:reference-architecture} illustrates a reference architecture of a data aggregation system in Solid. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{images/architecture/Reference-Architecture-Aggregator.pdf}
+    \caption{Reference architecture for data aggregation in Solid}
+    \label{fig:reference-architecture}
+\end{figure}
+
+\noindent This reference architecture highlights a number of challenges that make aggregation insecure, unscalable or privacy-invasive. Concretely, the following issues are remarked.
+
+\begin{enumerate}
+    \item IoT Sensors and Activity Trackers are embedded devices that very regularly write data to a Solid Pod. As these are resource-constrained devices, those write operations must be very efficient. As section \ref{sec:dpop} explains, the currently used mechanism uses public key cryptography, which is very computationally expensive.
+    \item The aggregator component (illustrated in red on the figure) reads complete resources directly from the user's Pod. Privacy-wise, this is unsafe and unnecessary, as not all data present in the resource may be necessary for performing the aggregation. Some method of restricting the data exposed to the aggregator must be devised.
+    \item The aggregator component can consist of multiple worker nodes in different networks. Similarly, services can require data from a Solid Pod but also depend on other services that also need access to this data. This is currently not supported in Solid, and existing flows (such as OAuth On-Behalf-Of) impose bottlenecks on the token endpoint. 
+    \item Group Pods holding data of users from different Pod providers are not supported as of yet. This comes with challenges in the authentication domain.
+\end{enumerate}
+
+\noindent All of these problems are situated (at least partially) in the domain of the Solid server, which provides the user's pods. A number of improvements here could help alleviate the problems listed above. The problems listed above can be divided in two categories: resource management and authentication management. To solve these problems, a solution will need to consist of two parts: one focused on rendering exposed resources more private, the other focused on improving the authentication mechanism. In the next section, some requirements for the needed solution will be derived based on the problems that have been illustrated in this section.
+
 \section{Requirements}
 \label{sec:requirements}
-This section introduces a number of requirements, based on the use cases presented in the previous section. First, functional requirements with a major impact on the architecture are discussed. The second subsection discusses a number of non-functional requirements. These requirements will help designing an effective solution, and their realization will also be evaluated later.
+This section introduces a number of requirements, based on the use cases and architecture presented in the previous sections. First, functional requirements with a major impact on the architecture are discussed. The second subsection discusses a number of non-functional requirements. These requirements will help designing an effective solution, and their realization will also be evaluated later.
 
 \subsection{Functional requirements}
 \noindent \textbf{Flexibility for the supported data scheme} Solid builds further upon the principles of Linked Data, and Solid servers can store nearly any type of data. As \middleware{} aims to be a general solution, it should work with any type of structured data, i.e., it must provide a way to anonymize \textit{any} type of textually represented structured data. Thus, flexibility for the supported data scheme is an essential part of \middleware{}. Concretely, \middleware{} should not hard-code any supported data schemes nor which \gls{PETs} should be applied to them: these should be able to be plugged in flexibly and selected automatically, to ensure that any data scheme can be supported. This provides a technical challenge, as a sufficient level of abstraction must be developed to be able to support any data scheme, while ensuring that the leakage requirements are not violated. \\
@@ -50,33 +73,12 @@ The attacker model considered in the design and development of \middleware{} is 
 
 It is important to note the goal of \middleware{} in terms of disclosure prevention here. As will be explained in section \ref{sec:statistical-privacy}, many \gls{PETs} try to prevent identity disclosure (in datasets containing data from many different users). However, since every Solid pod is linked to a WebID (containing data of a single user), the main goal of this middleware is to prevent attribute disclosure. Accordingly, the attackers considered try to gain knowledge of \textit{data attributes}. Handling identity disclosure is also an important aspect of a privacy-aware software system, but in the case of data aggregators for Solid, this must be handled by the aggregators themselves.
 
-\section{A generic data aggregation architecture in Solid}
-A middleware for aggregation in Solid will consist of a number of components, each with their own responsibility. Figure \ref{fig:reference-architecture} illustrates a reference architecture of a data aggregation system in Solid. 
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.0\textwidth]{images/architecture/Reference-Architecture-Aggregator.pdf}
-    \caption{Reference architecture for data aggregation in Solid}
-    \label{fig:reference-architecture}
-\end{figure}
-
-\noindent This reference architecture highlights a number of challenges that make aggregation insecure, unscalable or privacy-invasive. Concretely, the following issues are remarked.
-
-\begin{enumerate}
-    \item IoT Sensors and Activity Trackers are embedded devices that very regularly write data to a Solid Pod. As these are resource-constrained devices, those write operations must be very efficient. As section \ref{sec:dpop} explains, the currently used mechanism uses public key cryptography, which is very computationally expensive.
-    \item The aggregator component (illustrated in red on the figure) reads complete resources directly from the user's Pod. Privacy-wise, this is unsafe and unnecessary, as not all data present in the resource may be necessary for performing the aggregation. Some method of restricting the data exposed to the aggregator must be devised.
-    \item The aggregator component can consist of multiple worker nodes in different networks. Similarly, services can require data from a Solid Pod but also depend on other services that also need access to this data. This is currently not supported in Solid, and existing flows (such as OAuth On-Behalf-Of) impose bottlenecks on the token endpoint. 
-    \item Group Pods holding data of users from different Pod providers are not supported as of yet. This comes with challenges in the authentication domain.
-\end{enumerate}
-
-\noindent All of these problems are situated (at least partially) in the domain of the Solid server, which provides the user's pods. A number of improvements here could help alleviate the problems listed above. The problems listed above can be divided in two categories: resource management and authentication management. To solve these problems, a solution will need to consist of two parts: one focused on rendering exposed resources more private, the other focused on improving the authentication mechanism. In the next section, an overview of the conceptual solution is presented.
-
-\section{Solution overview}
+\section{System overview}
 To solve the problems and fulfill the requirements stipulated above, \middleware{} consists of two main components. The first component is called \textit{privacy filters} and focuses on improving data privacy for data exposed to aggregators (or other applications). The second component is an implementation of macaroons in Solid, i.e. a new access token mechanism. This mechanism supports decentralized delegation, group vaults, and is computationally very efficient (to support data writes by IoT sensors, ...).
 
 Privacy filters are a mechanism to dynamically modify requested resources to strip away or modify sensitive data attributes. When a resource is requested for aggregation, it often contains a lot of unnecessary and private information. Privacy filters are implemented as a middleware in the Solid server, and dynamically strip away certain attributes of the resource. To realize this, a number of configuration files are loaded on to the server, or the user's pod. These configuration files describe what \textit{privacy tactics} ought to be applied to a certain data scheme, for a given \textit{privacy level}. Privacy levels are a granular way to select how much to trust a certain application or aggregator (i.e., how private should the resource be rendered). The next chapter studies a number of \gls{PETs} to determine which are usable in \middleware{}. Privacy filters are then discussed in detail in chapter \ref{cha:privacy-filters}. 
 
-To alleviate the authentication and authorization problems that come with data aggregation in Solid, this thesis further investigates the use of macaroons in Solid. Some background information on macaroons has been given in section \ref{sec:macaroons}. Macaroons support decentralized delegation out-of-the-box, and also support \textit{caveats} (requirements which must be fulfilled for a token to be valid), as well as third-party attestations. These properties can improve aggregation security, for example by embedding the required privacy level inside the access token. Furthermore, in this manner the access tokens can be restricted to a single resource on the token side. Lastly, macaroons use \acrfull{HMAC} instead of public-key cryptography. This creates performance improvements that enable IoT devices or activity trackers to more efficiently write to Solid pods. The integration of macaroons in Solid is discussed in detail in chapter \ref{cha:macaroons-solid}.
+To alleviate the authentication and authorization problems that come with data aggregation in Solid, this dissertation further investigates the use of macaroons in Solid. Some background information on macaroons has been given in section \ref{sec:macaroons}. Macaroons support decentralized delegation out-of-the-box, and also support \textit{caveats} (requirements which must be fulfilled for a token to be valid), as well as third-party attestations. These properties can improve aggregation security, for example by embedding the required privacy level inside the access token, as well as providing a natural mechanism for realizing group vault using the third-party attestation. Furthermore, macaroons allow the access tokens to be restricted to a single resource on the token side. Lastly, macaroons use \acrfull{HMAC} instead of public-key cryptography. This creates performance improvements that enable IoT devices or activity trackers to more efficiently write to Solid pods. The integration of macaroons in Solid is discussed in detail in chapter \ref{cha:macaroons-solid}.
 
 The combination of these two components can enable better and more secure data aggregation in Solid. Figure \ref{fig:aggregation-flow} illustrates more concretely the flow of data aggregation using these two new mechanisms.
 

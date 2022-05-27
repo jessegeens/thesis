@@ -363,7 +363,7 @@
   \def\pagerefname{page}%
   \def\partrefname{Part~}%
   \def\chapterrefname{Chapter~}%
-  \def\listfiguresandtablesname{List of Figures and Tables}}
+  \def\listfiguresandtablesname{List of figures and tables}}
 \begingroup
   \catcode`\"\active
   \@firstofone{\endgroup
@@ -481,7 +481,7 @@
  % \listoflistings*%
  % \let\listoflistings\relax  
 }
-\newcommand*\listfiguresandtablesname{List of Figures and Tables}
+\newcommand*\listfiguresandtablesname{List of figures and tables}
 \setrmarg{2.55em plus1fil}
 \setlength{\cftbeforechapterskip}{1ex \@plus\p@}
 \captionnamefont{\scshape}

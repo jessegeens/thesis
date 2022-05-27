@@ -1,17 +1,14 @@
 \documentclass[master=cws,masteroption=gs,english]{kulemt/kulemt}
 \setup{title={Secure and protected data aggregation in the decentralized web},
   author={Jesse Geens},
-  promotor={Prof.\,dr.\,ir.\ Wouter Joosen \and Dr. Bert Lagaisse \and Prof. dr. Vincent Naessens},
+  promotor={Prof. dr. ir. Wouter Joosen \and Dr. Bert Lagaisse \and Prof. dr. Vincent Naessens},
   assessor={Prof. dr. Bart Jacobs \and Dr. Emad Heydari Beni},
   assistant={Dr. Emad Heydari Beni \and Ir. Kristof Jannes}}
 % De volgende \setup mag verwijderd worden als geen fiche gewenst is.
 \setup{filingcard,
-  translatedtitle={Veilige en beschermde data aggregatie in het gedecentraliseerde web},
+  translatedtitle={Veilige en beschermde gegevensaggregatie in het gedecentraliseerde web},
   udc=621.3,
-  shortabstract={Hier komt een heel bondig abstract van hooguit 500
-    woorden. \LaTeX\ commando's mogen hier gebruikt worden. Blanco lijnen
-    (of het commando \texttt{\string\pa r}) zijn wel niet toegelaten!
-    \endgraf \lipsum[2]}}
+  shortabstract={\input{chapters/a-korte-samenvatting}}}
 % Verwijder de "%" op de volgende lijn als je de kaft wil afdrukken
 %\setup{coverpageonly}
 % Verwijder de "%" op de volgende lijn als je enkel de eerste pagina's wil
@@ -85,14 +82,6 @@
 \newcommand{\citepjournal}[1]{(\citetalias{#1}, \citeyear{#1})}
 \newcommand{\citetjournal}[1]{\citetalias{#1} (\citeyear{#1})}
 
-%%%%%%%
-% Om wat tekst te genereren wordt hier het lipsum pakket gebruikt.
-% Bij een echte masterproef heb je dit natuurlijk nooit nodig!
-\IfFileExists{lipsum.sty}%
- {\usepackage{lipsum}\SetLipsumDefault{11-13}}%
- {\newcommand{\lipsum}[1][11-13]{\par Hier komt wat tekst: lipsum ##1.\par}}
-%%%%%%%
-
 % Set todos in text
 \usepackage{todonotes}
 
@@ -130,7 +119,7 @@
 \usemintedstyle{autumn}
 
 \newenvironment{code}{\captionsetup{type=listing}}{}
-\renewcommand{\lstlistlistingname}{List of Code Fragments}
+\renewcommand{\lstlistlistingname}{List of code fragments}
 %\SetupFloatingEnvironment{listing}{name=Listing}
 
 
@@ -167,6 +156,13 @@
 % Turn images 90 degrees
 \usepackage{rotating}
 
+% Remove capitalization
+\addto\captionsenglish{%
+  \renewcommand\listfigurename{List of figures}}
+  
+\addto\captionsenglish{%
+  \renewcommand\listtablename{List of tables}}
+  
 %\includeonly{chap-n}
 \begin{document}
 
@@ -192,13 +188,28 @@
 \makeatletter\@openrightfalse
 \listoffiguresandtables
 %\lstlistoflistings
-\addcontentsline{toc}{chapter}{\lstlistlistingname}{
+%\phantomsection
+%\addcontentsline{toc}{chapter}{\lstlistlistingname}{
+\lstlistoflistings%}
 
-\lstlistoflistings
-
+\addcontentsline{toc}{chapter}{List of code fragments and repositories}{
+{\let\clearpage\relax \chapter*{List of repositories}}
+\begin{tabularx}{\textwidth}{@{}p{37mm}X@{}}
+    \texttt{pepsa-component}   & \url{https://github.com/jessegeens/pepsa-component} \\
+    \texttt{groupvault-demo}   & \url{https://github.com/jessegeens/groupvault-demo} \\
+    \texttt{data-generator}   & \url{https://github.com/jessegeens/data-generator} \\
+    \texttt{thesis-experiments}   & \url{https://github.com/jessegeens/thesis-experiments} \\
+    %All code (KU Leuven only)   & \url{https://github.com/jessegeens/pepsa-component} \\
+  \end{tabularx}
 }
-\printglossary[type=\acronymtype,title={List of Abbreviations}]
+
+ 
+
+\printglossary[type=\acronymtype,title={List of abbreviations}]
 \@openrighttrue\makeatother
+
+
+
 % De lijst van symbolen is eveneens optioneel.
 % Deze lijst moet wel manueel aangemaakt worden, bv. als volgt:
 %\chapter{List of Abbreviations}

@@ -33,7 +33,7 @@ The previous section gave an introduction to the concept of privacy. In IT syste
 \end{itemize}
 \noindent \citeauthor{privacy-design-strategies} notes that much like security, privacy is a core property of software systems, and is heavily architecture-dependent. It is therefore of paramount importance that privacy considerations are taken into account from the outset and through the whole development cycle. This design philosophy is named \textit{privacy by design} and it is one of the requirements listed in the GDPR. For regular software design, software developers have used software design patterns to solve common architectural problems. Likewise, \citet{privacy-design-strategies} and \citet{de-id-taxonomy} propose a number of \textit{privacy design strategies}, which will be used extensively.
 
-\section{Transformation-based Approaches}
+\section{Transformation-based approaches}
 \label{sec:transformation-approaches}
 Transformation-based approaches are approaches that modify datasets in a way such that the resulting dataset contains less \gls{PII}. The transformation-based approaches studied  in this section all happen on a row-by-row basis. Since data transformations \textit{modify} the dataset, it is important to note that this has an impact on the utility of the data. Some transformations may be more powerful at anonymizing the data, but at the same time make the data less valuable or even unusable. A balance must be struck between data privacy and utility, where the choice for a certain data transformation is very context-dependent. This section introduces a number of data transformations.
 

@@ -1,15 +1,29 @@
+%\begin{table}[h]
+%\begin{center}
+%\begin{tabulary}{\textwidth}{p{0.20\textwidth}p{0.8\textwidth}}
+%\textbf{Transformation name} & \textbf{Description}                                                                                                                                                          \\ \hline
+%Remove               & The targeted and deliberate omission of PII from the data record or data set.                                                                                                 \\
+%Pseudonym            & The systematic replacement of direct identifiers with surrogates, whereby the mapping between surrogate and identity is kept separately.                                      \\
+%Perturbation         & The insertion of randomized noise into the values of the data to hide exact values                                                                                 \\
+%Random               & Tactics that involve the modification of PII attribute values/records by injecting artificial random elements.                                                                \\
+%Encrypt              & Using cryptographic means to encode the PII attribute values / records / datasets.                                                                                            \\
+%Hash                 & Using cryptographic hash functions to obfuscate the PII attribute values / records / datasets in a deterministic fashion.                                                                                            \\
+%\end{tabulary}
+%\caption{Overview of data transformations supported in \middleware{}}
+%\label{table:supported-transformations}
+%\end{center}
+%\end{table}
+
 \begin{table}[h]
-\begin{center}
-\begin{tabulary}{\textwidth}{p{0.20\textwidth}p{0.8\textwidth}}
-\textbf{Transformation name} & \textbf{Description}                                                                                                                                                          \\ \hline
-Remove               & The targeted and deliberate omission of PII from the data record or data set.                                                                                                 \\
-Pseudonym            & The systematic replacement of direct identifiers with surrogates, whereby the mapping between surrogate and identity is kept separately.                                      \\
-Perturbation         & The insertion of randomized noise into the values of the data to hide exact values                                                                                 \\
-Random               & Tactics that involve the modification of PII attribute values/records by injecting artificial random elements.                                                                \\
-Encrypt              & Using cryptographic means to encode the PII attribute values / records / datasets.                                                                                            \\
-Hash                 & Using cryptographic hash functions to obfuscate the PII attribute values / records / datasets in a deterministic fashion.                                                                                            \\
+\begin{tabulary}{\textwidth}{p{0.20\textwidth}p{0.52\textwidth}p{0.2\textwidth}}
+\textbf{Transformation} & \textbf{Description}  & \textbf{Type}               \\ \hline
+Remove                       & The targeted and deliberate omission of \gls{PII} from the data record or data set.                                                            & $any \rightarrow null$      \\
+Pseudonym                    & The systematic replacement of direct identifiers with surrogates, whereby the mapping between surrogate and identity is kept separately. & $string \rightarrow string$ \\
+Perturbation                 & The insertion of randomized noise into the values of the data to hide exact values                                                       & $num \rightarrow num$ \\
+Random                       & Tactics that involve the modification of \gls{PII} attribute values/records by injecting artificial random elements.                           & $any \rightarrow any$       \\
+Encrypt                      & Using cryptographic means to encode the \gls{PII} attribute values / records / datasets.                                                       & $any \rightarrow string$    \\
+Hash                         & Using cryptographic hash functions to obfuscate the \gls{PII} attribute values / records / datasets in a deterministic fashion.                & $any \rightarrow string$   
 \end{tabulary}
-\caption{Overview of data transformations supported in \middleware{}}
+\caption{Overview of data transformations supported in \middleware{}, based on \citet{de-id-taxonomy}}
 \label{table:supported-transformations}
-\end{center}
 \end{table}

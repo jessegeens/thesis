@@ -48,24 +48,6 @@
   {\par\normalfont\hfill--\ \fancyquote@author\hspace*{\@tempdima}\par\bigskip}
 \makeatother
 
-% environment derived from framed.sty: see leftbar environment definition
-%\newenvironment{formal}{%
-%  \def\FrameCommand{%
-%    \definecolor{formalshade}{rgb}{0.95,0.95,1}
-%    \definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
-%    \hspace{1pt}%
-%    {\color{darkblue}\vrule width 2pt}%
-%    {\color{formalshade}\vrule width 4pt}%
-%    \colorbox{formalshade}%
-%  }%
-%  \MakeFramed{\advance\hsize-\width\FrameRestore}%
-%  \noindent\hspace{-4.55pt}% disable indenting first paragraph
-%  \begin{adjustwidth}{}{7pt}%
-%  \vspace{2pt}\vspace{2pt}%
-%}
-%{%
-%  \vspace{2pt}\end{adjustwidth}\endMakeFramed%
-%}
 
 \newcounter{futurework}
 \newenvironment{futurework}[1][]{\refstepcounter{futurework}\par\medskip
@@ -106,8 +88,11 @@
 
 % Acronyms
 \usepackage[acronym,smallcaps]{glossaries}
+\usepackage[abbreviations]{glossaries-extra}
 \glstoctrue
 \loadglsentries{acronyms}
+\glssetcategoryattribute{acronym}{glossdesc}{firstuc}
+\glssetcategoryattribute{acronym}{glossdesc}{title}
 \makeglossaries
 %\glsdisablehyper
 
@@ -185,30 +170,27 @@
 %\listoftables
 % Bij een beperkt aantal figuren en tabellen gebruik je liever het volgende:
 %\renewcommand\listoflistingscaption{List of Source Codes}
+\renewcommand{\glsnamefont}[1]{\makefirstuc{#1}}
+
 \makeatletter\@openrightfalse
 \listoffiguresandtables
-%\lstlistoflistings
-%\phantomsection
-%\addcontentsline{toc}{chapter}{\lstlistlistingname}{
-\lstlistoflistings%}
+\lstlistoflistings
 
 \addcontentsline{toc}{chapter}{List of code fragments and repositories}{
 {\let\clearpage\relax \chapter*{List of repositories}}
 \begin{tabularx}{\textwidth}{@{}p{37mm}X@{}}
-    \texttt{pepsa-component}   & \url{https://github.com/jessegeens/pepsa-component} \\
-    \texttt{groupvault-demo}   & \url{https://github.com/jessegeens/groupvault-demo} \\
-    \texttt{data-generator}   & \url{https://github.com/jessegeens/data-generator} \\
-    \texttt{thesis-experiments}   & \url{https://github.com/jessegeens/thesis-experiments} \\
+    pepsa-component   & \url{https://github.com/jessegeens/pepsa-component} \\
+    groupvault-demo   & \url{https://github.com/jessegeens/groupvault-demo} \\
+    data-generator   & \url{https://github.com/jessegeens/data-generator} \\
+    thesis-experiments   & \url{https://github.com/jessegeens/thesis-experiments} \\
     %All code (KU Leuven only)   & \url{https://github.com/jessegeens/pepsa-component} \\
   \end{tabularx}
 }
 
  
 
-\printglossary[type=\acronymtype,title={List of abbreviations}]
+\printglossary[type=\acronymtype,title={List of abbreviations}]%,style=super]
 \@openrighttrue\makeatother
-
-
 
 % De lijst van symbolen is eveneens optioneel.
 % Deze lijst moet wel manueel aangemaakt worden, bv. als volgt:

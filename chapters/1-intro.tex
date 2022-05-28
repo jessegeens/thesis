@@ -31,15 +31,13 @@ This dissertation presents a Middleware for Aggregation Security in Solid (\midd
 \begin{enumerate}
     \item An overview of literature in the domain of \acrlong{PETs}, accompanied by a discussion of each technology and its usability within the context of Solid.
     \newpage
-    \item Privacy filters, a novel, customizable and seamless approach to limit the information leakage of data exposed through Solid Pods. This mechanism is implemented in a prototype extension of the \acrlong{CSS}\footnote{\url{https://github.com/CommunitySolidServer/CommunitySolidServer}} and evaluated.
-    \item A mechanism for realizing decentralized delegation of access tokens in Solid, which also enables more efficient generation of tokens and enables tokens with third-party attestations. This mechanism is also accompanied by a prototype and benchmarked.
+    \item Privacy filters, a novel, customizable and seamless approach to limit the information leakage of data exposed through Solid pods. This mechanism is implemented in a prototype extension of the \acrlong{CSS}\footnote{\url{https://github.com/CommunitySolidServer/CommunitySolidServer}} and evaluated.
+    \item A mechanism for realizing decentralized delegation of access tokens in Solid, which also enables more efficient generation and verification of tokens as well as tokens with third-party attestations. This mechanism is also accompanied by a prototype and benchmarked.
 \end{enumerate}
 
-\section{Dissertation Outline}
+\section{Dissertation outline}
 \label{sec:outline}
-This dissertation aims to develop possible solutions for realizing a middleware for secure and protected data aggregation in Solid. The next sections of this chapter discuss a number of use cases which illustrate the problem statement and its complexities.
-
-To better understand the context in which this dissertation is set, chapter \ref{cha:background} introduces some necessary background information. This chapter covers all the topics on which this dissertation is built, such as an in-depth explanation of the Solid protocol, as well as an introduction to macaroons, a novel type of access token. 
+This section describes the layout of the remaining parts of this text. To better understand the context in which this dissertation is set, the next chapter introduces some necessary background information. This chapter covers all the topics on which this dissertation is built, such as an in-depth explanation of the Solid protocol, as well as an introduction to macaroons, a novel type of access token. 
 
 Chapter \ref{cha:solution-overview} starts by introducing a number of use cases which highlight the need for an aggregation middleware. Furthermore, a generic architecture for data aggregation in Solid is introduced. This architecture aids in researching what the concrete bottlenecks are and is thus used to develop some concrete goals for the middleware. Based on the presented use cases and goals, a number of requirements and a relevant attacker model are proposed. The final section of this chapter then gives a system overview of \middleware{}, explaining on a high level the two main components of the middleware.
 
@@ -47,8 +45,8 @@ The first building block necessary for such a middleware system concerns the pri
 
 Chapter \ref{cha:privacy-filters} subsequently introduces privacy filters, one of the components of the solution, in detail. This component focuses on rewriting requests to render data more private when it is requested by an aggregator or application. The chapter also discusses the concrete implementation of this component. The main findings of section \ref{cha:analysis} will be used to develop this solution.
 
-Having developed a possible solution to the privacy problem, the next challenge is \textit{(decentralized) delegation}. This is discussed in chapter \ref{cha:macaroons-solid}. Aggregators can be quite complex, consisting of multiple workers, and they need long-lived access to the data in a safe manner. Macaroons are studied as a possible remedy, and their advantages and drawbacks are discussed. Combining these technologies, the chapter concludes with a possible architecture in which privacy filters and macaroons are used to build a secure and protected data aggregator.
+Having developed a possible solution to the privacy problem, the next challenge is \textit{(decentralized) delegation of access tokens}. This is discussed in chapter \ref{cha:macaroons-solid}. Aggregators can be quite complex, consisting of multiple workers, and they need long-lived access to the data in a safe manner. Macaroons are studied as a possible remedy, and their advantages and drawbacks are discussed. This is done by first looking at how macaroons can enable group vaults. Subsequently, macaroons are compared to Solid's current token system in the context of delegating access tokens.
 
-To better understand the applicability of this dissertation's contributions in terms of performance and feasibility chapter \ref{cha:evaluation} validates and evaluates the results. This is done by discussing theoretical shortcomings, as well as performing some experiments to measure the performance of developed prototypes. 
+\noindent To better understand the applicability of this dissertation's contributions in terms of performance and feasibility, chapter \ref{cha:evaluation} validates and evaluates the results. This is done by discussing theoretical shortcomings, as well as performing some experiments to measure the performance of developed prototypes. 
 
 Finally, chapter \ref{cha:conclusion} summarizes the main findings of this dissertation. The dissertation is then concluded by discussing potential areas of future work, which may hopefully inspire the reader to perform further research in this domain.

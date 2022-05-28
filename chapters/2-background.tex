@@ -8,7 +8,7 @@ This section gives a detailed overview of the Solid protocol. The Solid protocol
 
 \subsection{The Semantic Web}
 \label{sec:semantic-web}
-\begin{quote}{Tim Berners-Lee}
+\begin{quote}{Sir Tim Berners-Lee}
     ``The Semantic Web is not a separate Web but an extension of the current one, in which information is given well-defined meaning, better enabling computers and people to work in cooperation.''
 \end{quote}
 
@@ -23,7 +23,7 @@ Currently, markup languages such as XML enable users to arbitrarily structure do
 \begin{figure}[H]
     \centering
     \includegraphics[width = 0.9\textwidth]{images/background/linked-data.png}
-    \caption{\gls{RDF} representation of the city Tokyo, with predicates relating it to its area and its country. Source: \citet{generating-pva}}
+    \caption{\acrshort{RDF} representation of the city Tokyo, with predicates relating it to its area and its country. Source: \citet{generating-pva}}
     \label{fig:linked-data}
 \end{figure}
 
@@ -44,12 +44,12 @@ This does not completely solve the problem, however. It is possible that multipl
 \end{quote}
 % TODO pod as abbreviation: add to index?
 
-\noindent Solid \citep{solid} is a proposed W3C specification that wishes to decentralize the web by giving people control over their data. Solid aims to realize this by giving people an online datastore called a \textit{pod} (personal online datastore). Users can then login to applications using an authentication mechanism provided by Solid, and the application can in turn access data stored in the user's pod.
+\noindent Solid \citep{solid} is a proposed W3C specification that wishes to decentralize the web by giving people control over their data. Solid aims to realize this by giving people an online datastore called a \textit{pod} (personal online datastore). Users can then log in to applications using an authentication mechanism provided by Solid, and the application can in turn access data stored in the user's pod.
 
 By storing all the data inside the user's pod instead of on the application server, the user retains complete control over his data. He can flexibly choose what data to share with what applications. Furthermore, storing the data in a pod reduces vendor lock-in: when the user wishes to switch from one service to another, he can simply give the new application access to the data he already possesses. 
 
 In Solid, there are two types of resources: linked and non-linked data resources. Non-linked data resources are the usual kinds of data that we access on the web right now (binary, text, images, ...), while linked data follows the 
- \gls{RDF} specifications by using a content representation such as Turtle. These linked-data standards follow the principles of the Semantic Web.
+ \gls{RDF} specifications by using a content representation such as Turtle. These linked-data resources thus follow the principles of the Semantic Web.
 
 \subsection{Authentication}
 \label{sec:solid-authentication}
@@ -73,10 +73,10 @@ Identities in solid (both for users and other agents) follow the WebID standard 
 
 <>
     a foaf:PersonalProfileDocument;
-    foaf:maker <http://localhost:3002/jesse/profile/card#me>;
+    foaf:maker <http://localhost/jesse/profile/card#me>;
     foaf:primaryTopic <http://localhost/jesse/profile/card#me>.
 
-<http://localhost:3002/jesse/profile/card#me>
+<http://localhost/jesse/profile/card#me>
     
     solid:oidcIssuer <http://localhost/>;
     a foaf:Person.
@@ -96,7 +96,7 @@ While the WebID standard provides identities, it does not yet verify them. The a
     
     3. \textbf{Local Authentication}: Alice gets redirected towards her service provider's own Sign In page, thus requesting \texttt{https://alice.solidtest\\.space/signin}, and authenticates using her preferred method (password, WebID-TLS certificate, FIDO 2 / WebAuthn device, etc).\\
     
-    4. \textbf{User Consent}: (Optional) She's presented with a user consent screen, along the lines of "Do you wish to sign in to \texttt{bob.example}?".\\
+    4. \textbf{User Consent}: (Optional) She's presented with a user consent screen, along the lines of ``Do you wish to sign in to \texttt{bob.example}?''.\\
     
     5. \textbf{Authentication Response}: She then gets redirected back towards \texttt{https://bob.example/resource1} (the resource she was originally trying to request). The server, \texttt{bob.example}, also receives a signed ID Token from \texttt{alice.solidtest.space} that was returned with the response in point 3, attesting that she has signed in.\\
     
@@ -130,13 +130,13 @@ All the steps for performing an authentication request have then been fulfilled,
 \newpage
 \subsection{Authorization}
 \label{sec:solid-authorization}
-Authorization within the Solid project builds on the Web Access Control (WAC) standard \citep{wac}. The WAC standard provides a method to define authorization conditions for resources in a Pod using an \gls{ACL}. Every resource is coupled with an \gls{ACL} resource - either directly, or by inheriting it from a parent container. These \gls{ACL} resources are using the \gls{ACL} ontology, usually in a turtle file\footnote{Other \gls{RDF} representations are also allowed, but support for turtle files is mandatory}. Authorization conditions consist of three elements: access objects (the associated resource), access modes (\textit{read}, \textit{write}, \textit{append} or \textit{control}) and access subjects (the agents performing the request).
+Authorization within the Solid project builds on the Web Access Control (WAC) standard \citep{wac}. The WAC standard provides a method to define authorization conditions for resources in a pod using an \gls{ACL}. Every resource is coupled with an \gls{ACL} resource - either directly, or by inheriting it from a parent container. These \gls{ACL} resources are using the \gls{ACL} ontology, usually in a turtle file\footnote{Other \gls{RDF} representations are also allowed, but support for turtle files is mandatory}. Authorization conditions consist of three elements: access objects (the associated resource), access modes (\textit{read}, \textit{write}, \textit{append} or \textit{control}) and access subjects (the agents performing the request).
 
 The access objects in an \gls{ACL} resource are the resources the \gls{ACL} resource refers to. This can be both a normal resource (LDP-RS or LDP-NR, see \ref{subsec:ldp}) as well as a container. It is not mandatory for resources to have an associated \gls{ACL} resource, as these can be inherited. This mechanism ensures that there is no need to create duplicate \gls{ACL} resources for similar resources, as well as ensuring proper protection for newly created resources. When a resource is accessed, the server will first look for a directly associated \gls{ACL} resource. When none is found, the server will walk up the container tree (starting from the current container the resource is located in, then the parents, up until the root container). Once an \gls{ACL} resource applying to one of the parent containers is found, this is applied to the requested resource.
 
 Possible access modes, then, are either \textit{read}, \textit{write}, \textit{append} or \textit{control}. Reading and writing are the usual operations. Append is a subset of writing: data can be added to the resource, but not deleted. This is useful for, for example, logging applications, ensuring that logs cannot be removed. Since appending is a subset of writing, the writing authorization implies the appending authorization (no resource can allow writing but disallow appending). Finally, control means being able to modify the \gls{ACL} of the resource and generally implies ownership of the resource.
 
-Lastly, access subjects are those agents who request a certain operation on the resource. Generally, these can be divided into four categories. The first one is \textit{every agent}, i.e., the resource is publicly accessible. A second option is authenticated agents only (with no restrictions on who these agents are), which may be useful for auditing purposes. Thirdly, resource access can be restricted to agents with a specific WebID. Finally, this can also be extended to groups of agents (where the group has a single WebID). An example \gls{ACL} resource, taken from the \acrlong{CSS}\footnote{See \url{https://github.com/solid/community-server}}, is presented below.
+Lastly, access subjects are those agents who request a certain operation on the resource. Generally, these can be divided into four categories. The first one is \textit{every agent}, i.e., the resource is publicly accessible. A second option is authenticated agents only (with no restrictions on who these agents are), which may be useful for auditing purposes. Thirdly, resource access can be restricted to agents with a specific WebID. Finally, this can also be extended to groups of agents (where the group has a single WebID). An example \gls{ACL} resource, taken from the \acrlong{CSS}, is presented below.
 
 \newpage
 {\captionsetup{aboveskip=-0.2\normalbaselineskip}{
@@ -184,11 +184,11 @@ ETag: W/'123456789'
 %\newpage
 \section{Macaroons}
 \label{sec:macaroons}
-Macaroons are a type of authorization credential developed for decentralized distributed systems. This section gives some background on why macaroons were developed, followed by the technical details of how they work. As will become clear, macaroons offer many advantages in an inherently decentralized system such as Solid. Macaroons will form an important part of the solutions proposed by this dissertation, and thus warrant some extensive background information.
+Macaroons are a type of authorization credential developed for decentralized distributed systems. This section gives some background on why macaroons were developed, followed by the technical details of how they work. As will become clear, macaroons offer many advantages in an inherently decentralized system such as Solid. Macaroons will form an important part of the solutions proposed by this dissertation, and thus warrant a thorough introduction.
 
 \subsection{Introduction}
 \label{sec:macaroons-intro}
-Macaroons were developed at Google in \citeyear{macaroons} by \citeauthor{macaroons}. They were created to solve a common authorization problem, for which no sufficient solutions existed yet at the time. In 2014, the Cloud was an emerging technology which began to see widespread adoption. In the Cloud, a microservices architecture is often used, where a piece of software consists of multiple, smaller services. This architecture style has many advantages, such as improved scalability and testability, but it also comes with many challenges regarding authentication and authorization.
+Macaroons were developed at Google in \citeyear{macaroons} by \citeauthor{macaroons}. They were created to solve a common authorization problem, for which no sufficient solution existed yet at the time. In 2014, the Cloud was an emerging technology which began to see widespread adoption. In the Cloud, a microservices architecture is often used, where a piece of software consists of multiple, smaller services. This architecture style has many advantages, such as improved scalability and testability, but it also comes with many challenges regarding authentication and authorization.
 
 In particular, services operated by different owners and stakeholders are often used (for example, using third-party APIs), which necessitates sharing data across multiple trust domains. However, existing solutions are often not sufficient for solving this problem. A very commonly used authentication mechanism is bearer tokens. Bearer tokens act as a proof that the bearer of the token should have access to a particular resource. However, this implies that anyone able to steal the token can also get access to the resource. Other mechanisms, such as DPoP (see section \ref{sec:dpop}), rely on public-key cryptography, which comes with a high computational cost.
 
@@ -204,16 +204,16 @@ To tackle these challenges, macaroons were introduced. Macaroons are similar to 
 As can be seen from the examples, there are two types of caveats. The first type of caveats is called \textit{first-party caveats}. These are caveats that can be checked locally by the server receiving the request. In the example, caveats 1, 2 and 3 are first-party caveats. 
 The second type of caveats are \textit{third-party caveats}. These are caveats which must be validated by a third-party server. This is done by returning a so-called \textit{discharge macaroon}. The discharge macaroon is handed out by the third-party server and proves to the first-party server that the embedded caveat is indeed fulfilled. In the example, the fourth caveat is a third-party caveats. These discharge macaroons can in turn also contain additional caveats.
 
-An additional important property of macaroons is called \textit{decentralized delegation}. Often, a service also depends on another service to perform some of its work. Traditionally, service A has a token only valid for service A, and cannot safely transfer its token to another service. Solutions, such as the OAuth On-Behalf-Of flow exist, but these require a lot of communication between the service and the token endpoint. With decentralized delegation, services can give other services also a valid macaroon, with at most the same caveats. A service can also further attenuate the macaroon before handing it off. Finally, macaroons can also be sealed, which makes them unable to be passed along. 
+An additional important property of macaroons is called \textit{decentralized delegation}. Often, a service also depends on another service to perform some of its work. Traditionally, a service has a token that is valid only for that service, and cannot safely transfer its token to another service. Solutions exist, such as the OAuth On-Behalf-Of flow, but these require a lot of communication between the service and the token endpoint. With decentralized delegation, services can give other services also a valid macaroon, with at most the same caveats. A service can also further attenuate the macaroon before handing it off. Finally, macaroons can also be sealed, which makes them unable to be modified further. 
 
 All of this is made possible by the structure of macaroons, which is explained in the next section. Macaroons use \gls{HMAC}, which is computationally very efficient.
 
-\subsection{Construction of macaroons}
+\subsection{Structure of macaroons}
 Macaroons work in a fashion somewhat similar to blockchains. Macaroons are made up of a chain of messages, the caveats. These messages are used to form a chain of \gls{HMAC} values, of which only the terminal value will be stored in the macaroon. This final value acts as the signature, and can be recalculated by the macaroon-issuing service to verify its authenticity. 
 
 The first message of a macaroon is a (public) \textit{key identifier}. This identifier maps to a secret root key. This root key is used to generate the first signature such that: $$sig_1 = \text{HMAC}(K_r, \text{msg-id})$$
-with $K_r$ the secret root key, and $\text{msg-id}$ the first message. The next signature is then calculated as: $$sig_2 = \text{HMAC}(sig_1, C_1)$$
-which is then done until all caveats have been incorporated. By keeping the root key secret, the signature of a macaroon cannot be forged. However, the identifier of the root key is needed to ensure that the target service knows which root key to use for signature verification. This mechanism is illustrated in figure \ref{fig:macaroon-hash-chain}.
+with $K_r$ the secret root key, and $\text{msg-id}$ the first message (usually the key identifier). The next signature is then calculated based on the first caveat $C_1$ as: $$sig_2 = \text{HMAC}(sig_1, C_1)$$
+which is repeated until all caveats have been incorporated. By keeping the root key secret, the signature of a macaroon cannot be forged. However, the identifier of the root key is needed to ensure that the target service knows which root key to use for signature verification. This mechanism is illustrated in figure \ref{fig:macaroon-hash-chain}.
 
 Since the final signature is visible, macaroons can be further attenuated by the service that makes requests: a new caveat $C_k$ can be added by generating a new signature $sig_{k+1} = \text{HMAC}(sig_k, C_k)$. 
 

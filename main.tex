@@ -59,7 +59,8 @@
 % cite (author, year) style
 \usepackage{natbib}
 %\bibliographystyle{abbrvnat}
-\bibliographystyle{unsrtnat}
+%\bibliographystyle{unsrtnat}
+\bibliographystyle{plainnat}
 \setcitestyle{authoryear,open={(},close={)}}
 \newcommand{\citepjournal}[1]{(\citetalias{#1}, \citeyear{#1})}
 \newcommand{\citetjournal}[1]{\citetalias{#1} (\citeyear{#1})}
@@ -242,10 +243,8 @@
 %\include{app-n}
 
 \backmatter
-% Na de bijlagen plaatst men nog de bibliografie.
-% Je kan de  standaard "abbrv" bibliografiestijl vervangen door een andere.
-%\bibliographystyle{abbrv}
-% Vanboven bij package import gedefinieerd
+
+% !!! Vanboven bij package import gedefinieerd
 
 % nocite{*} includes all non-cited references
 %\setcitestyle{numbers}
